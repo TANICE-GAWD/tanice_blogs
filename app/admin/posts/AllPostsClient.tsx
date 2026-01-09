@@ -30,6 +30,18 @@ export default function AllPostsClient({
   draftCount 
 }: AllPostsClientProps) {
   const [posts, setPosts] = useState(initialPosts);
+  
+  console.log('AllPostsClient received:', {
+    totalPosts: initialPosts.length,
+    publishedCount,
+    draftCount,
+    posts: initialPosts.map(p => ({
+      title: p.title,
+      published: p.published,
+      publishedAt: p.publishedAt
+    }))
+  });
+  
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
     postId: string;
@@ -83,6 +95,16 @@ export default function AllPostsClient({
           <Plus className="w-4 h-4 mr-2" />
           Create New Post
         </Link>
+      </div>
+
+      {/* Debug Info (remove in production) */}
+      <div className="mb-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm">
+        <p><strong>Debug Info:</strong></p>
+        <p>Total Posts: {posts.length}</p>
+        <p>Published: {publishedPosts.length}</p>
+        <p>Drafts: {draftPosts.length}</p>
+        <p>Initial Published Count: {publishedCount}</p>
+        <p>Initial Draft Count: {draftCount}</p>
       </div>
 
       {/* Stats */}
@@ -243,7 +265,7 @@ export default function AllPostsClient({
                           {post.views.toLocaleString()}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                          {formatDate(post.publishedAt)}
+                          {post.publishedAt ? formatDate(post.publishedAt) : 'Not published'}
                         </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-end gap-2">
