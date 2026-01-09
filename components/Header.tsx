@@ -43,7 +43,7 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="font-bold text-xl text-gray-900 dark:text-white">
-            TechBlog
+            TANICE
           </Link>
 
           {/* Desktop Navigation */}

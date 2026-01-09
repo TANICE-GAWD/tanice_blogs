@@ -25,7 +25,7 @@ export default function PrivacyPage() {
             </h2>
             <p className="text-blue-800 dark:text-blue-200">
               <strong>Data Controller:</strong> TANICE Blog<br />
-              <strong>Contact Email:</strong> privacy@taniceblog.com<br />
+              <strong>Contact Email:</strong> contact@taniceblog.com<br />
               <strong>Website:</strong> https://taniceblog.com
             </p>
           </div>
@@ -109,4 +109,96 @@ export default function PrivacyPage() {
           
           <p>We implement appropriate security measures to protect your personal information:</p>
           <ul>
-            <li>Secure HTTPS encry
+            <li>Secure HTTPS encryption for all data transmission</li>
+            <li>Password-protected admin access with strong authentication</li>
+            <li>Regular security updates and monitoring</li>
+            <li>Secure cloud hosting with enterprise-grade security</li>
+            <li>Limited access to personal data on a need-to-know basis</li>
+          </ul>
+
+          <h2>6. Your Rights and Choices</h2>
+          
+          <p>Depending on your location, you may have the following rights regarding your personal data:</p>
+          
+          <h3>6.1 General Rights</h3>
+          <ul>
+            <li><strong>Access:</strong> Request information about the personal data we hold about you</li>
+            <li><strong>Correction:</strong> Request correction of inaccurate or incomplete data</li>
+            <li><strong>Deletion:</strong> Request deletion of your personal data</li>
+            <li><strong>Portability:</strong> Request a copy of your data in a structured format</li>
+            <li><strong>Objection:</strong> Object to processing based on legitimate interest</li>
+          </ul>
+
+          <h3>6.2 Cookie Choices</h3>
+          <p>
+            You can control cookies through your browser settings. Note that disabling essential cookies may affect website functionality.
+          </p>
+
+          <h3>6.3 Exercising Your Rights</h3>
+          <p>
+            To exercise any of these rights, please contact us at contact@taniceblog.com. We will respond to your request within 30 days.
+          </p>
+
+          <h2>7. Data Retention</h2>
+          
+          <p>We retain your personal information for as long as necessary to:</p>
+          <ul>
+            <li>Provide our services and maintain website functionality</li>
+            <li>Comply with legal obligations</li>
+            <li>Resolve disputes and enforce our agreements</li>
+          </ul>
+          
+          <p>
+            Analytics data is typically retained for 2 years. When you request deletion of your data, we will delete it within 30 days unless we have a legal obligation to retain it.
+          </p>
+
+          <h2>8. International Data Transfers</h2>
+          
+          <p>
+            Your personal data may be transferred to and processed in countries other than your own. We ensure that such transfers are protected by appropriate safeguards, including:
+          </p>
+          <ul>
+            <li>Adequacy decisions by the European Commission</li>
+            <li>Standard contractual clauses</li>
+            <li>Certification schemes and codes of conduct</li>
+          </ul>
+
+          <h2>9. Children's Privacy</h2>
+          
+          <p>
+            Our website is not directed to children under 13 years of age. We do not knowingly collect personal information from children under 13. If we become aware that we have collected personal information from a child under 13, we will take steps to delete such information.
+          </p>
+
+          <h2>10. Changes to This Privacy Policy</h2>
+          
+          <p>
+            We may update this privacy policy from time to time to reflect changes in our practices or applicable laws. When we make changes, we will:
+          </p>
+          <ul>
+            <li>Update the "Last Updated" date at the top of this policy</li>
+            <li>Notify users of material changes through a prominent notice on our website</li>
+            <li>For significant changes, provide additional notice via email (when contact information is available)</li>
+          </ul>
+
+          <h2>11. Contact Us</h2>
+          
+          <p>
+            If you have any questions, concerns, or requests regarding this privacy policy or our data practices, please contact us:
+          </p>
+          
+          <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 mt-6">
+            <p className="mb-2"><strong>Email:</strong> tanice.dev@gmail.com</p>
+            <p className="mb-2"><strong>Website:</strong> https://tanice.me</p>
+            <p><strong>Response Time:</strong> We aim to respond to all privacy inquiries within 30 days.</p>
+          </div>
+
+          <hr className="my-8" />
+          
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            This privacy policy was last updated on January 9, 2026. We recommend reviewing this policy periodically to stay informed about how we protect your privacy.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

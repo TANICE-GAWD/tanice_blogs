@@ -9,7 +9,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
             <Link href="/" className="font-bold text-xl text-gray-900 dark:text-white">
-              TechBlog
+              TANICE
             </Link>
             <p className="mt-2 text-gray-600 dark:text-gray-300 max-w-md">
               Practical insights on system design, data structures, career growth, and startup hiring from my experience in tech.
@@ -102,7 +102,7 @@ export default function Footer() {
 
         <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
           <p className="text-center text-gray-600 dark:text-gray-300">
-            © {new Date().getFullYear()} TechBlog. All rights reserved.
+            © {new Date().getFullYear()} TANICE Blog. All rights reserved.
           </p>
         </div>
       </div>
