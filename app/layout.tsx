@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: 'Tech Blog - System Design, DSA & Career Growth',
   description: 'Practical insights on system design, data structures, career growth, and startup hiring from my experience in tech.',
   keywords: ['system design', 'data structures', 'algorithms', 'career', 'interviews', 'startup hiring'],
-  authors: [{ name: 'Your Name' }],
+  authors: [{ name: 'TANICE (Prince Sharma)' }],
   openGraph: {
     title: 'Tech Blog - System Design, DSA & Career Growth',
     description: 'Practical insights on system design, data structures, career growth, and startup hiring.',

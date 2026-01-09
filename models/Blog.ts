@@ -13,6 +13,7 @@ export interface IBlog {
   publishedAt: Date;
   readTime: number;
   views: number;
+  lastViewed?: Date;
   seoTitle?: string;
   seoDescription?: string;
   createdAt: Date;
@@ -67,6 +68,9 @@ const BlogSchema = new mongoose.Schema({
   views: {
     type: Number,
     default: 0,
+  },
+  lastViewed: {
+    type: Date,
   },
   seoTitle: String,
   seoDescription: String,

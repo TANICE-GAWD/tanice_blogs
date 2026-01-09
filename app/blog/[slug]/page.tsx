@@ -5,8 +5,9 @@ import Image from 'next/image';
 import dbConnect from '@/lib/db';
 import Blog, { IBlog } from '@/models/Blog';
 import { formatDate, categories } from '@/lib/utils';
-import { Clock, Eye, ArrowLeft } from 'lucide-react';
+import { Clock, ArrowLeft } from 'lucide-react';
 import ShareButton from '@/components/ShareButton';
+import ViewTracker from '@/components/ViewTracker';
 
 interface BlogPageProps {
   params: { slug: string };
@@ -19,16 +20,13 @@ async function getBlog(slug: string): Promise<IBlog | null> {
     
     if (!blog) return null;
 
-    // Increment view count
-    await Blog.findByIdAndUpdate(blog._id, { $inc: { views: 1 } });
-
+    // Don't increment views here anymore - let the client component handle it
     return {
       ...blog,
       _id: blog._id.toString(),
       publishedAt: new Date(blog.publishedAt),
       createdAt: new Date(blog.createdAt),
       updatedAt: new Date(blog.updatedAt),
-      views: blog.views + 1,
     };
   } catch (error) {
     console.error('Error fetching blog:', error);
@@ -78,7 +76,7 @@ export async function generateMetadata({ params }: BlogPageProps): Promise<Metad
       description: blog.excerpt || '',
       type: 'article',
       publishedTime: blog.publishedAt.toISOString(),
-      authors: ['Your Name'],
+      authors: ['TANICE'],
       images: blog.coverImage ? [blog.coverImage] : [],
     },
     twitter: {
@@ -159,10 +157,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
               <Clock size={14} />
               <span>{blog.readTime} min read</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Eye size={14} />
-              <span>{blog.views} views</span>
-            </div>
+            <ViewTracker blogId={blog.slug} initialViews={blog.views} />
           </div>
 
           {/* Tags */}

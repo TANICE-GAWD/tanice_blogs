@@ -8,13 +8,15 @@ import {
   Plus, 
   Settings, 
   Home,
-  Eye 
+  Eye,
+  BarChart3
 } from 'lucide-react';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'All Posts', href: '/admin/posts', icon: FileText },
   { name: 'Create Post', href: '/admin/create', icon: Plus },
+  { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
 ];
 

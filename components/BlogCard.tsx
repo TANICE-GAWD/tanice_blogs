@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { formatDate, categories } from '@/lib/utils';
-import { Clock, Eye } from 'lucide-react';
+import { Clock } from 'lucide-react';
+import ViewTracker from './ViewTracker';
 
 interface BlogCardProps {
   title: string;
@@ -74,10 +75,7 @@ export default function BlogCard({
               <span>{readTime} min read</span>
             </div>
           </div>
-          <div className="flex items-center gap-1">
-            <Eye size={14} />
-            <span>{views}</span>
-          </div>
+          <ViewTracker blogId={slug} initialViews={views} />
         </div>
       </div>
     </article>
