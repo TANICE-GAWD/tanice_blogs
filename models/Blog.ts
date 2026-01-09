@@ -100,7 +100,6 @@ const BlogSchema = new mongoose.Schema({
   },
   publishedAt: {
     type: Date,
-    default: Date.now,
   },
   readTime: {
     type: Number,

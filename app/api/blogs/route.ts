@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
       readTime,
       seoTitle: seoTitle || title,
       seoDescription: seoDescription || finalExcerpt,
-      publishedAt: published ? new Date() : new Date(),
+      publishedAt: published ? new Date() : undefined,
     });
 
     await blog.save();

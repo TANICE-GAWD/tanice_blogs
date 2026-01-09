@@ -9,10 +9,32 @@ import { ArrowRight } from 'lucide-react';
 async function getRecentBlogs() {
   try {
     await dbConnect();
+    console.log('Testing database connection...');
+    
+    // First, let's see all blogs
+    const allBlogs = await Blog.find({}).lean();
+    console.log('Total blogs in database:', allBlogs.length);
+    
+    // Then published blogs
+    const publishedBlogs = await Blog.find({ published: true }).lean();
+    console.log('Published blogs:', publishedBlogs.length);
+    
+    // Log each blog's details
+    allBlogs.forEach((blog: any, index) => {
+      console.log(`Blog ${index + 1}:`, {
+        title: blog.title,
+        published: blog.published,
+        publishedAt: blog.publishedAt,
+        hasPublishedAt: !!blog.publishedAt
+      });
+    });
+    
     const blogs = await Blog.find({ published: true })
       .sort({ publishedAt: -1 })
       .limit(6)
       .lean();
+    
+    console.log('Blogs found for recent:', blogs.length);
     
     return blogs.map((blog: any) => ({
       ...blog,
@@ -34,6 +56,8 @@ async function getFeaturedBlogs() {
       .sort({ views: -1, publishedAt: -1 })
       .limit(5)
       .lean();
+    
+    console.log('Featured blogs found:', blogs.length);
     
     return blogs.map((blog: any) => ({
       ...blog,
