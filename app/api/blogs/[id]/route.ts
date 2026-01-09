@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import Blog from '@/models/Blog';
+import Blog, { IBlog } from '@/models/Blog';
 import { generateSlug, calculateReadTime } from '@/lib/utils';
 
 // GET /api/blogs/[id] - Get single blog by ID or slug
@@ -14,9 +14,9 @@ export async function GET(
     const { id } = params;
     
     // Try to find by slug first, then by ID
-    let blog = await Blog.findOne({ slug: id }).lean();
+    let blog = await Blog.findOne({ slug: id }).lean() as IBlog | null;
     if (!blog) {
-      blog = await Blog.findById(id).lean();
+      blog = await Blog.findById(id).lean() as IBlog | null;
     }
 
     if (!blog) {

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import Blog from '@/models/Blog';
+import Blog, { IBlog } from '@/models/Blog';
 
 // GET /api/analytics/summary - Get summary analytics for resume/portfolio
 export async function GET() {
@@ -68,9 +68,9 @@ export async function GET() {
         postsWithViews
       },
       mostViewed: mostViewed ? {
-        title: mostViewed.title,
-        views: mostViewed.views || 0,
-        category: mostViewed.category
+        title: (mostViewed as any).title,
+        views: (mostViewed as any).views || 0,
+        category: (mostViewed as any).category
       } : null,
       categoryStats: categoryStats.map(stat => ({
         category: stat._id,

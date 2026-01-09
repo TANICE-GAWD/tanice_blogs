@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import Blog from '@/models/Blog';
+import Blog, { IBlog } from '@/models/Blog';
 import { generateSlug, calculateReadTime } from '@/lib/utils';
 import { extractMediaFromContent, replaceMediaWithPlaceholders } from '@/lib/mediaProcessor';
 
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
         .sort(sortQuery)
         .skip(skip)
         .limit(limit)
-        .lean(),
+        .lean() as IBlog[],
       Blog.countDocuments(query),
     ]);
 

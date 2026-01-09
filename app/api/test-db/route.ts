@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import Blog from '@/models/Blog';
+import Blog, { IBlog } from '@/models/Blog';
 
 export async function GET() {
   try {
@@ -14,7 +14,7 @@ export async function GET() {
     console.log(`Found ${count} blog posts in database`);
     
     // Try to fetch all blogs
-    const blogs = await Blog.find().lean();
+    const blogs = await Blog.find().lean() as IBlog[];
     console.log('Blogs found:', blogs);
     
     return NextResponse.json({

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import Blog from '@/models/Blog';
+import Blog, { IBlog } from '@/models/Blog';
 
 // GET /api/analytics/views - Get view analytics
 export async function GET(request: NextRequest) {
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
       .sort({ views: -1 })
       .limit(10)
       .select('title slug views category')
-      .lean();
+      .lean() as IBlog[];
 
     // Get views by category
     const viewsByCategory = await Blog.aggregate([
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
     .sort({ lastViewed: -1 })
     .limit(20)
     .select('title slug views lastViewed category')
-    .lean();
+    .lean() as IBlog[];
 
     return NextResponse.json({
       totalViews: totalViews[0]?.totalViews || 0,
