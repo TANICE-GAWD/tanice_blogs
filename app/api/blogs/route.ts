@@ -1,0 +1,153 @@
+import { NextRequest, NextResponse } from 'next/server';
+import dbConnect from '@/lib/db';
+import Blog from '@/models/Blog';
+import { generateSlug, calculateReadTime } from '@/lib/utils';
+
+// GET /api/blogs - Fetch blogs with filtering and pagination
+export async function GET(request: NextRequest) {
+  try {
+    await dbConnect();
+
+    const { searchParams } = new URL(request.url);
+    const category = searchParams.get('category');
+    const tag = searchParams.get('tag');
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '10');
+    const sort = searchParams.get('sort') || 'newest';
+    const published = searchParams.get('published') !== 'false';
+
+    // Build query
+    const query: any = {};
+    if (published) query.published = true;
+    if (category) query.category = category;
+    if (tag) query.tags = { $in: [tag] };
+
+    // Build sort
+    let sortQuery: any = {};
+    switch (sort) {
+      case 'oldest':
+        sortQuery = { publishedAt: 1 };
+        break;
+      case 'popular':
+        sortQuery = { views: -1, publishedAt: -1 };
+        break;
+      case 'newest':
+      default:
+        sortQuery = { publishedAt: -1 };
+        break;
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [blogs, total] = await Promise.all([
+      Blog.find(query)
+        .sort(sortQuery)
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Blog.countDocuments(query),
+    ]);
+
+    return NextResponse.json({
+      blogs: blogs.map(blog => ({
+        ...blog,
+        _id: blog._id.toString(),
+      })),
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    });
+  } catch (error) {
+    console.error('Error fetching blogs:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch blogs' },
+      { status: 500 }
+    );
+  }
+}
+
+// POST /api/blogs - Create new blog (Admin only)
+export async function POST(request: NextRequest) {
+  try {
+    // Check authentication
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Basic ')) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
+    const base64Credentials = authHeader.split(' ')[1];
+    const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
+    const [username, password] = credentials.split(':');
+
+    if (username !== process.env.ADMIN_USERNAME || password !== process.env.ADMIN_PASSWORD) {
+      return NextResponse.json(
+        { error: 'Invalid credentials' },
+        { status: 401 }
+      );
+    }
+
+    await dbConnect();
+
+    const body = await request.json();
+    const { title, content, category, tags, coverImage, published, excerpt, seoTitle, seoDescription } = body;
+
+    // Validate required fields
+    if (!title || !content || !category) {
+      return NextResponse.json(
+        { error: 'Title, content, and category are required' },
+        { status: 400 }
+      );
+    }
+
+    // Generate slug
+    const baseSlug = generateSlug(title);
+    let slug = baseSlug;
+    let counter = 1;
+
+    // Ensure unique slug
+    while (await Blog.findOne({ slug })) {
+      slug = `${baseSlug}-${counter}`;
+      counter++;
+    }
+
+    // Calculate read time
+    const readTime = calculateReadTime(content);
+
+    // Generate excerpt if not provided
+    const finalExcerpt = excerpt || content.replace(/<[^>]*>/g, '').substring(0, 150) + '...';
+
+    const blog = new Blog({
+      title,
+      slug,
+      content,
+      excerpt: finalExcerpt,
+      category,
+      tags: tags || [],
+      coverImage: coverImage || '',
+      published: published || false,
+      readTime,
+      seoTitle: seoTitle || title,
+      seoDescription: seoDescription || finalExcerpt,
+      publishedAt: published ? new Date() : new Date(),
+    });
+
+    await blog.save();
+
+    return NextResponse.json({
+      message: 'Blog created successfully',
+      blog: {
+        ...blog.toObject(),
+        _id: blog._id.toString(),
+      },
+    }, { status: 201 });
+  } catch (error) {
+    console.error('Error creating blog:', error);
+    return NextResponse.json(
+      { error: 'Failed to create blog' },
+      { status: 500 }
+    );
+  }
+}
