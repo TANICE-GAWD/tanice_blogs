@@ -85,15 +85,6 @@ export async function POST(request: NextRequest) {
 
     // Generate slug
     const baseSlug = generateSlug(title);
-    
-    // Ensure slug is not empty or too short
-    if (!baseSlug || baseSlug.length < 2) {
-      return NextResponse.json(
-        { error: 'Title must contain at least 2 valid characters for URL generation' },
-        { status: 400 }
-      );
-    }
-    
     let slug = baseSlug;
     let counter = 1;
 
