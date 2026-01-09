@@ -177,22 +177,21 @@ export default async function BlogPage({ params }: BlogPageProps) {
 
           {/* Cover Image */}
           {blog.coverImage && (
-            <div className="aspect-video relative rounded-lg overflow-hidden mb-8">
+            <div className="aspect-video relative rounded-lg overflow-hidden mb-8 bg-gray-100 dark:bg-gray-800">
               <Image
                 src={blog.coverImage}
                 alt={blog.title}
                 fill
-                className="object-cover"
+                className="object-contain"
               />
             </div>
           )}
         </header>
 
         {/* Content */}
-        <BlogRenderer 
-          content={blog.content}
-          media={blog.media || []}
-          className="mb-12"
+        <div 
+          className="prose prose-lg dark:prose-invert max-w-none mb-12"
+          dangerouslySetInnerHTML={{ __html: blog.content }}
         />
 
         {/* Share Section */}

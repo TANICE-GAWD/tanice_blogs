@@ -30,26 +30,18 @@ async function getRecentBlogs() {
 async function getFeaturedBlogs() {
   try {
     await dbConnect();
-    const featuredBlogs = await Promise.all(
-      Object.keys(categories).map(async (category) => {
-        const blog = await Blog.findOne({ 
-          category, 
-          published: true 
-        })
-        .sort({ views: -1, publishedAt: -1 })
-        .lean();
-        
-        return blog ? {
-          ...blog,
-          _id: blog._id.toString(),
-          publishedAt: new Date(blog.publishedAt),
-          createdAt: new Date(blog.createdAt),
-          updatedAt: new Date(blog.updatedAt),
-        } : null;
-      })
-    );
+    const blogs = await Blog.find({ published: true })
+      .sort({ views: -1, publishedAt: -1 })
+      .limit(5)
+      .lean();
     
-    return featuredBlogs.filter(Boolean);
+    return blogs.map(blog => ({
+      ...blog,
+      _id: blog._id.toString(),
+      publishedAt: new Date(blog.publishedAt),
+      createdAt: new Date(blog.createdAt),
+      updatedAt: new Date(blog.updatedAt),
+    }));
   } catch (error) {
     console.error('Error fetching featured blogs:', error);
     return [];
@@ -121,38 +113,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Featured Posts */}
-      {featuredBlogs.length > 0 && (
-        <section className="py-16 bg-white dark:bg-slate-900">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                Featured Posts
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300">
-                Popular posts from each category
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredBlogs.slice(0, 3).map((blog) => (
-                <BlogCard
-                  key={blog._id}
-                  title={blog.title}
-                  excerpt={blog.excerpt || blog.content.substring(0, 150) + '...'}
-                  category={blog.category}
-                  publishedAt={blog.publishedAt}
-                  readTime={blog.readTime}
-                  slug={blog.slug}
-                  coverImage={blog.coverImage}
-                  views={blog.views}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Categories Grid */}
       <section className="py-16 bg-gray-50 dark:bg-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -177,8 +137,40 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Featured Posts */}
+      {featuredBlogs.length > 0 && (
+        <section className="py-16 bg-white dark:bg-slate-900">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                Most Popular Posts
+              </h2>
+              <p className="text-gray-600 dark:text-gray-300">
+                Top 5 posts with the most views
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+              {featuredBlogs.map((blog) => (
+                <BlogCard
+                  key={blog._id}
+                  title={blog.title}
+                  excerpt={blog.excerpt || blog.content.substring(0, 150) + '...'}
+                  category={blog.category}
+                  publishedAt={blog.publishedAt}
+                  readTime={blog.readTime}
+                  slug={blog.slug}
+                  coverImage={blog.coverImage}
+                  views={blog.views}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Recent Posts */}
-      <section id="recent-posts" className="py-16 bg-white dark:bg-slate-900">
+      <section id="recent-posts" className="py-16 bg-gray-50 dark:bg-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-12">
             <div>

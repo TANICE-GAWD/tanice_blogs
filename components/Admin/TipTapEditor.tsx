@@ -73,20 +73,11 @@ export default function TipTapEditor({ content, onChange, onMediaInsert }: TipTa
         }).run();
         
         // Upload to server
-        const credentials = getAuthCredentials();
-        if (!credentials) {
-          toast.error('Authentication required');
-          return;
-        }
-
         const formData = new FormData();
         formData.append('file', file);
         
         const response = await fetch('/api/media/upload', {
           method: 'POST',
-          headers: {
-            'Authorization': `Basic ${credentials}`,
-          },
           body: formData,
         });
         

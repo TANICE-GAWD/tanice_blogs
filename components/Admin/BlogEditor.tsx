@@ -7,6 +7,7 @@ import { categories, generateSlug } from '@/lib/utils';
 import { extractMediaFromContent, replaceMediaWithPlaceholders } from '@/lib/mediaProcessor';
 import toast from 'react-hot-toast';
 import TipTapEditor from './TipTapEditor';
+import ImageUpload from './ImageUpload';
 import { 
   Eye,
   Save,
@@ -86,12 +87,26 @@ export default function BlogEditor({ initialData, isEdit = false }: BlogEditorPr
     setIsSaving(true);
 
     try {
-      // For now, let's simplify and not process media to isolate the issue
+      // Start with basic media processing - only handle uploaded images
+      let processedMedia = [];
+      
+      // Only process media if we have any
+      if (mediaItems.length > 0) {
+        processedMedia = mediaItems.map((item, index) => ({
+          type: item.type || 'image',
+          url: item.url || '',
+          alt: item.alt || '',
+          caption: item.caption || '',
+          position: index,
+          metadata: {}
+        }));
+      }
+      
       const blogData = {
         title: title.trim(),
         content: content,
         rawContent: content,
-        media: [], // Start with empty media array
+        media: processedMedia,
         category,
         tags: tags.split(',').map(tag => tag.trim()).filter(Boolean),
         coverImage: coverImage.trim(),
@@ -101,7 +116,7 @@ export default function BlogEditor({ initialData, isEdit = false }: BlogEditorPr
         published: publish,
       };
 
-      console.log('Sending simplified blog data:', JSON.stringify(blogData, null, 2));
+      console.log('Sending blog data with media:', JSON.stringify(blogData, null, 2));
 
       const url = isEdit ? `/api/blogs/${initialData?._id}` : '/api/blogs';
       const method = isEdit ? 'PUT' : 'POST';
@@ -239,15 +254,11 @@ export default function BlogEditor({ initialData, isEdit = false }: BlogEditorPr
 
             {/* Cover Image */}
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Cover Image URL (optional)
-              </label>
-              <input
-                type="url"
-                placeholder="https://example.com/image.jpg"
+              <ImageUpload
                 value={coverImage}
-                onChange={(e) => setCoverImage(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
+                onChange={setCoverImage}
+                label="Cover Image (optional)"
+                placeholder="https://example.com/image.jpg"
               />
             </div>
 
