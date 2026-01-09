@@ -74,8 +74,7 @@ export default function TipTapEditor({ content, onChange, onMediaInsert }: TipTa
         // Insert the uploaded image directly
         editor.chain().focus().setImage({ 
           src: data.url, 
-          alt: file.name,
-          class: 'rounded-lg mx-auto my-4 max-w-full h-auto'
+          alt: file.name
         }).run();
         
         // Call media insert callback if provided
