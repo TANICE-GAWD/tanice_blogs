@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { Eye, TrendingUp, Users, BarChart3 } from 'lucide-react';
+import dbConnect from '@/lib/db';
+import Blog from '@/models/Blog';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -13,22 +15,49 @@ export const metadata: Metadata = {
 
 async function getAnalytics() {
   try {
-    const baseUrl = process.env.VERCEL_URL 
-      ? `https://${process.env.VERCEL_URL}` 
-      : process.env.NEXTAUTH_URL || 'http://localhost:3000';
-      
-    const response = await fetch(`${baseUrl}/api/analytics/views`, {
-      cache: 'no-store',
-      headers: {
-        'Cache-Control': 'no-cache',
-      },
-    });
-    
-    if (!response.ok) {
-      throw new Error(`Failed to fetch analytics: ${response.status}`);
-    }
-    
-    return await response.json();
+    await dbConnect();
+
+    // Get total views
+    const totalViewsResult = await Blog.aggregate([
+      { $group: { _id: null, totalViews: { $sum: '$views' } } }
+    ]);
+
+    // Get most viewed posts
+    const mostViewed = await Blog.find({ published: true })
+      .sort({ views: -1 })
+      .limit(10)
+      .select('title slug views category')
+      .lean();
+
+    // Get views by category
+    const viewsByCategory = await Blog.aggregate([
+      { $match: { published: true } },
+      { $group: { _id: '$category', totalViews: { $sum: '$views' }, postCount: { $sum: 1 } } },
+      { $sort: { totalViews: -1 } }
+    ]);
+
+    // Get recent activity (posts with recent views)
+    const recentActivity = await Blog.find({
+      published: true,
+      lastViewed: { $exists: true }
+    })
+    .sort({ lastViewed: -1 })
+    .limit(20)
+    .select('title slug views lastViewed category')
+    .lean();
+
+    return {
+      totalViews: totalViewsResult[0]?.totalViews || 0,
+      mostViewed: mostViewed.map((post: any) => ({
+        ...post,
+        _id: post._id.toString(),
+      })),
+      viewsByCategory,
+      recentActivity: recentActivity.map((post: any) => ({
+        ...post,
+        _id: post._id.toString(),
+      })),
+    };
   } catch (error) {
     console.error('Error fetching analytics:', error);
     return {
@@ -42,6 +71,13 @@ async function getAnalytics() {
 
 export default async function AnalyticsPage() {
   const analytics = await getAnalytics();
+  
+  console.log('Analytics page data:', {
+    totalViews: analytics.totalViews,
+    mostViewedCount: analytics.mostViewed.length,
+    categoriesCount: analytics.viewsByCategory.length,
+    recentActivityCount: analytics.recentActivity.length
+  });
 
   return (
     <div>
@@ -53,6 +89,15 @@ export default async function AnalyticsPage() {
         <p className="text-gray-600 dark:text-gray-300">
           Track your blog&apos;s performance and engagement
         </p>
+      </div>
+
+      {/* Debug Info (remove in production) */}
+      <div className="mb-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm">
+        <p><strong>Debug Info:</strong></p>
+        <p>Total Views: {analytics.totalViews}</p>
+        <p>Most Viewed Posts: {analytics.mostViewed.length}</p>
+        <p>Categories: {analytics.viewsByCategory.length}</p>
+        <p>Recent Activity: {analytics.recentActivity.length}</p>
       </div>
 
       {/* Stats Overview */}
@@ -112,7 +157,7 @@ export default async function AnalyticsPage() {
                 Active Posts
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                {analytics.recentActivity.length}
+                {analytics.mostViewed.length}
               </p>
             </div>
             <div className="p-3 bg-orange-100 dark:bg-orange-900 rounded-full">
