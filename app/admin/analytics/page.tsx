@@ -2,6 +2,9 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { Eye, TrendingUp, Users, BarChart3 } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'Analytics - Admin',
   description: 'View blog analytics and statistics',
@@ -10,12 +13,19 @@ export const metadata: Metadata = {
 
 async function getAnalytics() {
   try {
-    const response = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/analytics/views`, {
+    const baseUrl = process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}` 
+      : process.env.NEXTAUTH_URL || 'http://localhost:3000';
+      
+    const response = await fetch(`${baseUrl}/api/analytics/views`, {
       cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache',
+      },
     });
     
     if (!response.ok) {
-      throw new Error('Failed to fetch analytics');
+      throw new Error(`Failed to fetch analytics: ${response.status}`);
     }
     
     return await response.json();

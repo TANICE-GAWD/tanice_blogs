@@ -36,7 +36,7 @@ export default function BlogCard({
               src={coverImage}
               alt={title}
               fill
-              className="object-contain"
+              className="object-cover"
             />
           </div>
         )}

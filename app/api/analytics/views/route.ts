@@ -1,3 +1,6 @@
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import Blog, { IBlog } from '@/models/Blog';
@@ -39,6 +42,9 @@ export async function GET(request: NextRequest) {
       .limit(10)
       .select('title slug views category')
       .lean();
+
+    console.log('Analytics - Most viewed posts found:', mostViewed.length);
+    console.log('Analytics - Sample post:', mostViewed[0]);
 
     // Get views by category
     const viewsByCategory = await Blog.aggregate([
