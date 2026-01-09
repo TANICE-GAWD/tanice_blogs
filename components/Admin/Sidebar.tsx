@@ -34,7 +34,9 @@ export default function AdminSidebar() {
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-2">
           {navigation.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = pathname === item.href || 
+              (item.href === '/admin/posts' && pathname.startsWith('/admin/edit/')) ||
+              (item.href === '/admin/create' && pathname.startsWith('/admin/edit/'));
             const Icon = item.icon;
             
             return (

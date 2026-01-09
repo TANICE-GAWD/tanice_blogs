@@ -5,7 +5,8 @@ import Image from 'next/image';
 import dbConnect from '@/lib/db';
 import Blog, { IBlog } from '@/models/Blog';
 import { formatDate, categories } from '@/lib/utils';
-import { Clock, Eye, ArrowLeft, Share2 } from 'lucide-react';
+import { Clock, Eye, ArrowLeft } from 'lucide-react';
+import ShareButton from '@/components/ShareButton';
 
 interface BlogPageProps {
   params: { slug: string };
@@ -203,24 +204,10 @@ export default async function BlogPage({ params }: BlogPageProps) {
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               Share this post
             </h3>
-            <button
-              onClick={() => {
-                if (navigator.share) {
-                  navigator.share({
-                    title: blog.title,
-                    text: blog.excerpt || '',
-                    url: window.location.href,
-                  });
-                } else {
-                  navigator.clipboard.writeText(window.location.href);
-                  // You could add a toast notification here
-                }
-              }}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              <Share2 size={16} />
-              Share
-            </button>
+            <ShareButton 
+              title={blog.title}
+              excerpt={blog.excerpt || ''}
+            />
           </div>
         </div>
 

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { categories, generateSlug } from '@/lib/utils';
@@ -18,7 +19,8 @@ import {
   Redo,
   Eye,
   Save,
-  Send
+  Send,
+  FileCode
 } from 'lucide-react';
 
 interface BlogEditorProps {
@@ -129,7 +131,10 @@ export default function BlogEditor({ initialData, isEdit = false }: BlogEditorPr
       );
 
       if (!isEdit) {
-        router.push('/admin');
+        router.push('/admin/posts');
+      } else {
+        // Stay on the edit page after saving
+        router.refresh();
       }
     } catch (error) {
       console.error('Error saving blog:', error);
@@ -149,9 +154,17 @@ export default function BlogEditor({ initialData, isEdit = false }: BlogEditorPr
         {/* Header */}
         <div className="border-b border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              {isEdit ? 'Edit Post' : 'Create New Post'}
-            </h1>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/admin/posts"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+              >
+                ← Back to Posts
+              </Link>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                {isEdit ? 'Edit Post' : 'Create New Post'}
+              </h1>
+            </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setIsPreview(!isPreview)}
@@ -331,6 +344,14 @@ export default function BlogEditor({ initialData, isEdit = false }: BlogEditorPr
                   }`}
                 >
                   <Code size={16} />
+                </button>
+                <button
+                  onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                  className={`p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 ${
+                    editor.isActive('codeBlock') ? 'bg-gray-200 dark:bg-gray-600' : ''
+                  }`}
+                >
+                  <FileCode size={16} />
                 </button>
                 <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
                 <button
