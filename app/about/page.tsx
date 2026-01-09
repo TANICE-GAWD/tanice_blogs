@@ -63,7 +63,7 @@ export default function AboutPage() {
       company: 'Independent',
       location: 'Remote',
       period: 'Oct 2025 - Present',
-      description: 'Developed over 5 MVPs for early-stage startups (e.g., Adopter - US based startup). Launched a commercial real-estate portfolio site (realestatebyneha.com). Delivered custom apps for PhD Institutes (e.g., PGIMER Chandigarh) to streamline research data processing.',
+      description: 'Developed over 5 MVPs for early-stage startups. Launched a commercial real-estate portfolio site. Delivered custom apps for PhD Institutes (e.g., PGIMER Chandigarh) to streamline research data processing. Successfully processed over 1,500 team registrations for a drone-racing hackathon by integrating Spline 3D drone animations and a Python backend.',
       skills: ['MVP Development', 'Real Estate Tech', 'Research Data Processing', 'Custom Applications']
     },
     {
@@ -101,11 +101,16 @@ export default function AboutPage() {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <div className="relative inline-block mb-8">
-            {/* Profile Picture Placeholder */}
-            <div className="w-32 h-32 mx-auto bg-blue-600 rounded-full flex items-center justify-center shadow-lg">
-              <div className="w-28 h-28 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                <span className="text-2xl font-bold text-gray-500 dark:text-gray-400">PT</span>
-              </div>
+            {/* Profile Picture */}
+            <div className="w-32 h-32 mx-auto bg-blue-600 rounded-full flex items-center justify-center shadow-lg overflow-hidden">
+              <Image
+                src="/LinkedIn_Pic.jpg"
+                alt="Prince Tanice"
+                width={128}
+                height={128}
+                className="w-full h-full object-cover rounded-full"
+                priority
+              />
             </div>
             {/* Status Indicator */}
             <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white dark:border-slate-900 flex items-center justify-center">
@@ -212,17 +217,11 @@ export default function AboutPage() {
                         </p>
                       </div>
                     </div>
-                    <p className="text-gray-600 dark:text-gray-300 mb-4">
-                      {exp.description}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {exp.skills.map((skill, skillIndex) => (
-                        <span
-                          key={skillIndex}
-                          className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm rounded-full"
-                        >
-                          {skill}
-                        </span>
+                    <div className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                      {exp.description.split('. ').map((sentence, sentenceIndex) => (
+                        <p key={sentenceIndex} className="mb-2">
+                          • {sentence}{sentence.endsWith('.') ? '' : '.'}
+                        </p>
                       ))}
                     </div>
                   </div>
