@@ -9,6 +9,7 @@ import { Clock, ArrowLeft } from 'lucide-react';
 import ShareButton from '@/components/ShareButton';
 import ViewTracker from '@/components/ViewTracker';
 import BlogRenderer from '@/components/BlogRenderer';
+import AnalyticsTracker from '@/components/AnalyticsTracker';
 
 interface BlogPageProps {
   params: { slug: string };
@@ -101,6 +102,11 @@ export default async function BlogPage({ params }: BlogPageProps) {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
+      <AnalyticsTracker 
+        slug={(blog as any).slug}
+        category={(blog as any).category}
+        title={(blog as any).title}
+      />
       <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
         <nav className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 mb-8">
@@ -205,6 +211,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
             <ShareButton 
               title={(blog as any).title}
               excerpt={(blog as any).excerpt || ''}
+              slug={(blog as any).slug}
             />
           </div>
         </div>

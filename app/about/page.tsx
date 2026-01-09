@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { trackEvent } from '@/lib/analytics';
 import { 
   Github, 
   Linkedin, 
@@ -132,6 +133,7 @@ export default function AboutPage() {
               href="https://github.com/TANICE-GAWD"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackEvent.contactClick('github')}
               className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-medium rounded-lg hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
             >
               <Github className="h-5 w-5 mr-2" />
@@ -141,6 +143,7 @@ export default function AboutPage() {
               href="https://linkedin.com/in/prince-tanice"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackEvent.contactClick('linkedin')}
               className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
             >
               <Linkedin className="h-5 w-5 mr-2" />
@@ -150,6 +153,7 @@ export default function AboutPage() {
               href="https://x.com/TANICE_GAWD"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackEvent.contactClick('twitter')}
               className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-colors"
             >
               <Twitter className="h-5 w-5 mr-2" />
