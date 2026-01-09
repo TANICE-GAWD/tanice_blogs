@@ -32,16 +32,6 @@ export default function BlogCard({
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
 
-  // Debug logging for cover image
-  if (coverImage) {
-    console.log('BlogCard cover image:', {
-      title,
-      coverImage,
-      isValidUrl: coverImage.startsWith('http'),
-      length: coverImage.length
-    });
-  }
-
   return (
     <Link href={`/blog/${slug}`} className="block">
       <article className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 cursor-pointer">
@@ -58,13 +48,12 @@ export default function BlogCard({
               src={coverImage}
               alt={title}
               fill
-              className="object-cover"
+              className="object-contain"
               unoptimized
               onLoad={() => setImageLoading(false)}
               onError={() => {
                 setImageError(true);
                 setImageLoading(false);
-                console.error('Image failed to load:', coverImage);
               }}
             />
           </div>
