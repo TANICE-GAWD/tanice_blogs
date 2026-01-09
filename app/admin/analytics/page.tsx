@@ -71,13 +71,6 @@ async function getAnalytics() {
 
 export default async function AnalyticsPage() {
   const analytics = await getAnalytics();
-  
-  console.log('Analytics page data:', {
-    totalViews: analytics.totalViews,
-    mostViewedCount: analytics.mostViewed.length,
-    categoriesCount: analytics.viewsByCategory.length,
-    recentActivityCount: analytics.recentActivity.length
-  });
 
   return (
     <div>
@@ -89,15 +82,6 @@ export default async function AnalyticsPage() {
         <p className="text-gray-600 dark:text-gray-300">
           Track your blog&apos;s performance and engagement
         </p>
-      </div>
-
-      {/* Debug Info (remove in production) */}
-      <div className="mb-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm">
-        <p><strong>Debug Info:</strong></p>
-        <p>Total Views: {analytics.totalViews}</p>
-        <p>Most Viewed Posts: {analytics.mostViewed.length}</p>
-        <p>Categories: {analytics.viewsByCategory.length}</p>
-        <p>Recent Activity: {analytics.recentActivity.length}</p>
       </div>
 
       {/* Stats Overview */}

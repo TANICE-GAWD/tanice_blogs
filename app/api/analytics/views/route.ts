@@ -22,9 +22,6 @@ export async function GET(request: NextRequest) {
       .select('title slug views category')
       .lean();
 
-    console.log('Analytics - Most viewed posts found:', mostViewed.length);
-    console.log('Analytics - Sample post:', mostViewed[0]);
-
     // Get views by category
     const viewsByCategory = await Blog.aggregate([
       { $match: { published: true } },
@@ -54,13 +51,6 @@ export async function GET(request: NextRequest) {
         _id: post._id.toString(),
       })),
     };
-
-    console.log('Analytics result:', {
-      totalViews: result.totalViews,
-      mostViewedCount: result.mostViewed.length,
-      categoriesCount: result.viewsByCategory.length,
-      recentActivityCount: result.recentActivity.length
-    });
 
     return NextResponse.json(result);
   } catch (error) {

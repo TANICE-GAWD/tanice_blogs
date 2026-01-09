@@ -15,19 +15,10 @@ export const metadata: Metadata = {
 async function getAllPosts() {
   try {
     await dbConnect();
-    console.log('Fetching all posts for admin...');
     
     const posts = await Blog.find()
       .sort({ updatedAt: -1 })
       .lean();
-
-    console.log('All posts found:', posts.length);
-    console.log('Posts details:', posts.map(p => ({
-      title: p.title,
-      published: p.published,
-      publishedAt: p.publishedAt,
-      updatedAt: p.updatedAt
-    })));
 
     return posts.map((post: any) => ({
       ...post,
@@ -46,12 +37,6 @@ export default async function AllPostsPage() {
   const posts = await getAllPosts();
   const publishedCount = posts.filter(post => post.published).length;
   const draftCount = posts.filter(post => !post.published).length;
-
-  console.log('AllPostsPage server-side:', {
-    totalPosts: posts.length,
-    publishedCount,
-    draftCount
-  });
 
   return (
     <AllPostsClient 
