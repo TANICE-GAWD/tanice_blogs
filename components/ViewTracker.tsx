@@ -17,6 +17,41 @@ export default function ViewTracker({ blogId, initialViews }: ViewTrackerProps) 
     const viewedPosts = JSON.parse(sessionStorage.getItem('viewedPosts') || '[]');
     const alreadyViewed = viewedPosts.includes(blogId);
 
+    const trackView = async () => {
+      try {
+        const response = await fetch(`/api/blogs/${blogId}/view`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent,
+            referrer: document.referrer,
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setViews(data.views);
+        }
+      } catch (error) {
+        console.error('Error tracking view:', error);
+      }
+    };
+
+    const fetchCurrentViews = async () => {
+      try {
+        const response = await fetch(`/api/blogs/${blogId}/views`);
+        if (response.ok) {
+          const data = await response.json();
+          setViews(data.views);
+        }
+      } catch (error) {
+        console.error('Error fetching views:', error);
+      }
+    };
+
     if (!alreadyViewed && !hasViewed) {
       // Track the view
       trackView();
@@ -35,40 +70,7 @@ export default function ViewTracker({ blogId, initialViews }: ViewTrackerProps) 
     return () => clearInterval(interval);
   }, [blogId, hasViewed]);
 
-  const trackView = async () => {
-    try {
-      const response = await fetch(`/api/blogs/${blogId}/view`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          timestamp: new Date().toISOString(),
-          userAgent: navigator.userAgent,
-          referrer: document.referrer,
-        }),
-      });
 
-      if (response.ok) {
-        const data = await response.json();
-        setViews(data.views);
-      }
-    } catch (error) {
-      console.error('Error tracking view:', error);
-    }
-  };
-
-  const fetchCurrentViews = async () => {
-    try {
-      const response = await fetch(`/api/blogs/${blogId}/views`);
-      if (response.ok) {
-        const data = await response.json();
-        setViews(data.views);
-      }
-    } catch (error) {
-      console.error('Error fetching views:', error);
-    }
-  };
 
   return (
     <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">

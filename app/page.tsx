@@ -88,7 +88,7 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-              Hi, I'm <span className="text-blue-600 dark:text-blue-400">TANICE</span>
+              Hi, I&apos;m <span className="text-blue-600 dark:text-blue-400">TANICE</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
               I write about system design, data structures, career growth, and startup hiring. 

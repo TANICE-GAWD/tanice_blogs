@@ -107,7 +107,7 @@ export default function DeleteConfirmModal({
               Post to delete:
             </p>
             <p className="text-gray-600 dark:text-gray-300 text-sm">
-              "{postTitle}"
+              "              &quot;{postTitle}&quot;"
             </p>
           </div>
 

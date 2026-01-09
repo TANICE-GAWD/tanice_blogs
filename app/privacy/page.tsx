@@ -163,7 +163,7 @@ export default function PrivacyPage() {
             <li>Certification schemes and codes of conduct</li>
           </ul>
 
-          <h2>9. Children's Privacy</h2>
+          <h2>9. Children&apos;s Privacy</h2>
           
           <p>
             Our website is not directed to children under 13 years of age. We do not knowingly collect personal information from children under 13. If we become aware that we have collected personal information from a child under 13, we will take steps to delete such information.
@@ -175,7 +175,7 @@ export default function PrivacyPage() {
             We may update this privacy policy from time to time to reflect changes in our practices or applicable laws. When we make changes, we will:
           </p>
           <ul>
-            <li>Update the "Last Updated" date at the top of this policy</li>
+            <li>Update the &quot;Last Updated&quot; date at the top of this policy</li>
             <li>Notify users of material changes through a prominent notice on our website</li>
             <li>For significant changes, provide additional notice via email (when contact information is available)</li>
           </ul>

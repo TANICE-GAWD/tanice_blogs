@@ -9,7 +9,7 @@ export default function NotFound() {
         Post Not Found
       </h2>
       <p className="text-gray-600 dark:text-gray-300 mb-6">
-        The blog post you're looking for doesn't exist or has been deleted.
+        The blog post you&apos;re looking for doesn&apos;t exist or has been deleted.
       </p>
       <div className="flex gap-4">
         <Link
