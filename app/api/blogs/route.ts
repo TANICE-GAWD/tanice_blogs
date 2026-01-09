@@ -45,12 +45,12 @@ export async function GET(request: NextRequest) {
         .sort(sortQuery)
         .skip(skip)
         .limit(limit)
-        .lean() as IBlog[],
+        .lean(),
       Blog.countDocuments(query),
     ]);
 
     return NextResponse.json({
-      blogs: blogs.map(blog => ({
+      blogs: blogs.map((blog: any) => ({
         ...blog,
         _id: blog._id.toString(),
       })),
