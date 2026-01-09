@@ -182,7 +182,9 @@ export default async function BlogPage({ params }: BlogPageProps) {
                 src={(blog as any).coverImage}
                 alt={(blog as any).title}
                 fill
-                className="object-contain"
+                className="object-cover"
+                priority
+                unoptimized
               />
             </div>
           )}
