@@ -6,7 +6,6 @@ import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
 import { useState } from 'react';
 import { ImageIcon, Video, Code, LinkIcon, Bold, Italic, List, ListOrdered, Quote, Undo, Redo } from 'lucide-react';
-import { getAuthCredentials } from '@/lib/auth';
 import toast from 'react-hot-toast';
 
 interface TipTapEditorProps {
@@ -58,72 +57,40 @@ export default function TipTapEditor({ content, onChange, onMediaInsert }: TipTa
     if (!file || !editor) return;
 
     setIsUploading(true);
-    let base64: string = '';
     
     try {
-      // Create temporary base64 preview
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        base64 = e.target?.result as string;
-        
-        // Insert temporary image
-        const mediaId = `temp_${Date.now()}`;
+      // Upload to server first
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const response = await fetch('/api/media/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        // Insert the uploaded image directly
         editor.chain().focus().setImage({ 
-          src: base64, 
-          alt: file.name
+          src: data.url, 
+          alt: file.name,
+          class: 'rounded-lg mx-auto my-4 max-w-full h-auto'
         }).run();
         
-        try {
-          // Upload to server
-          const formData = new FormData();
-          formData.append('file', file);
-          
-          const response = await fetch('/api/media/upload', {
-            method: 'POST',
-            body: formData,
-          });
-          
-          const data = await response.json();
-          
-          if (data.success) {
-            // Replace base64 with actual URL by finding the most recently added image
-            const currentContent = editor.getHTML();
-            const updatedContent = currentContent.replace(
-              new RegExp(`<img[^>]*src="${base64.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[^>]*>`, 'g'),
-              `<img src="${data.url}" alt="${file.name}" class="rounded-lg mx-auto my-4 max-w-full h-auto" />`
-            );
-            
-            editor.commands.setContent(updatedContent);
-            
-            // Call media insert callback if provided
-            if (onMediaInsert) {
-              await onMediaInsert('image', data.url, file.name);
-            }
-            
-            toast.success('Image uploaded successfully!');
-          } else {
-            throw new Error(data.error || 'Upload failed');
-          }
-        } catch (uploadError) {
-          console.error('Upload failed:', uploadError);
-          toast.error(uploadError instanceof Error ? uploadError.message : 'Upload failed');
-          
-          // Remove the temporary image on error
-          const currentContent = editor.getHTML();
-          const updatedContent = currentContent.replace(
-            new RegExp(`<img[^>]*src="${base64.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[^>]*>`, 'g'),
-            ''
-          );
-          editor.commands.setContent(updatedContent);
-        } finally {
-          setIsUploading(false);
-          event.target.value = ''; // Reset file input
+        // Call media insert callback if provided
+        if (onMediaInsert) {
+          await onMediaInsert('image', data.url, file.name);
         }
-      };
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.error('File reading failed:', error);
-      toast.error('Failed to read file');
+        
+        toast.success('Image uploaded successfully!');
+      } else {
+        throw new Error(data.error || 'Upload failed');
+      }
+    } catch (uploadError) {
+      console.error('Upload failed:', uploadError);
+      toast.error(uploadError instanceof Error ? uploadError.message : 'Upload failed');
+    } finally {
       setIsUploading(false);
       event.target.value = ''; // Reset file input
     }
