@@ -14,7 +14,7 @@ interface BlogPageProps {
   params: { slug: string };
 }
 
-async function getBlog(slug: string): Promise<IBlog | null> {
+async function getBlog(slug: string) {
   try {
     await dbConnect();
     const blog = await Blog.findOne({ slug, published: true }).lean();
@@ -24,10 +24,10 @@ async function getBlog(slug: string): Promise<IBlog | null> {
     // Don't increment views here anymore - let the client component handle it
     return {
       ...blog,
-      _id: blog._id.toString(),
-      publishedAt: new Date(blog.publishedAt),
-      createdAt: new Date(blog.createdAt),
-      updatedAt: new Date(blog.updatedAt),
+      _id: (blog as any)._id.toString(),
+      publishedAt: new Date((blog as any).publishedAt),
+      createdAt: new Date((blog as any).createdAt),
+      updatedAt: new Date((blog as any).updatedAt),
     };
   } catch (error) {
     console.error('Error fetching blog:', error);
@@ -35,7 +35,7 @@ async function getBlog(slug: string): Promise<IBlog | null> {
   }
 }
 
-async function getRelatedBlogs(category: string, currentSlug: string): Promise<IBlog[]> {
+async function getRelatedBlogs(category: string, currentSlug: string) {
   try {
     await dbConnect();
     const blogs = await Blog.find({
@@ -70,21 +70,21 @@ export async function generateMetadata({ params }: BlogPageProps): Promise<Metad
   }
 
   return {
-    title: blog.seoTitle || blog.title,
-    description: blog.seoDescription || blog.excerpt,
+    title: (blog as any).seoTitle || (blog as any).title,
+    description: (blog as any).seoDescription || (blog as any).excerpt,
     openGraph: {
-      title: blog.title,
-      description: blog.excerpt || '',
+      title: (blog as any).title,
+      description: (blog as any).excerpt || '',
       type: 'article',
-      publishedTime: blog.publishedAt.toISOString(),
+      publishedTime: (blog as any).publishedAt.toISOString(),
       authors: ['TANICE'],
-      images: blog.coverImage ? [blog.coverImage] : [],
+      images: (blog as any).coverImage ? [(blog as any).coverImage] : [],
     },
     twitter: {
       card: 'summary_large_image',
-      title: blog.title,
-      description: blog.excerpt || '',
-      images: blog.coverImage ? [blog.coverImage] : [],
+      title: (blog as any).title,
+      description: (blog as any).excerpt || '',
+      images: (blog as any).coverImage ? [(blog as any).coverImage] : [],
     },
   };
 }
@@ -96,8 +96,8 @@ export default async function BlogPage({ params }: BlogPageProps) {
     notFound();
   }
 
-  const relatedBlogs = await getRelatedBlogs(blog.category, blog.slug);
-  const categoryInfo = categories[blog.category];
+  const relatedBlogs = await getRelatedBlogs((blog as any).category, (blog as any).slug);
+  const categoryInfo = categories[(blog as any).category as keyof typeof categories];
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
@@ -109,18 +109,18 @@ export default async function BlogPage({ params }: BlogPageProps) {
           </Link>
           <span>/</span>
           <Link 
-            href={`/categories/${blog.category}`}
+            href={`/categories/${(blog as any).category}`}
             className="hover:text-gray-700 dark:hover:text-gray-300"
           >
             {categoryInfo.name}
           </Link>
           <span>/</span>
-          <span className="text-gray-900 dark:text-white">{blog.title}</span>
+          <span className="text-gray-900 dark:text-white">{(blog as any).title}</span>
         </nav>
 
         {/* Back Button */}
         <Link
-          href={`/categories/${blog.category}`}
+          href={`/categories/${(blog as any).category}`}
           className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 mb-8"
         >
           <ArrowLeft size={16} className="mr-1" />
@@ -139,32 +139,32 @@ export default async function BlogPage({ params }: BlogPageProps) {
 
           {/* Title */}
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            {blog.title}
+            {(blog as any).title}
           </h1>
 
           {/* Excerpt */}
-          {blog.excerpt && (
+          {(blog as any).excerpt && (
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-6">
-              {blog.excerpt}
+              {(blog as any).excerpt}
             </p>
           )}
 
           {/* Metadata */}
           <div className="flex flex-wrap items-center gap-6 text-sm text-gray-500 dark:text-gray-400 mb-8">
-            <time dateTime={blog.publishedAt.toISOString()}>
-              {formatDate(blog.publishedAt)}
+            <time dateTime={(blog as any).publishedAt.toISOString()}>
+              {formatDate((blog as any).publishedAt)}
             </time>
             <div className="flex items-center gap-1">
               <Clock size={14} />
-              <span>{blog.readTime} min read</span>
+              <span>{(blog as any).readTime} min read</span>
             </div>
-            <ViewTracker blogId={blog.slug} initialViews={blog.views} />
+            <ViewTracker blogId={(blog as any).slug} initialViews={(blog as any).views} />
           </div>
 
           {/* Tags */}
-          {blog.tags.length > 0 && (
+          {(blog as any).tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-8">
-              {blog.tags.map((tag) => (
+              {(blog as any).tags.map((tag: any) => (
                 <span
                   key={tag}
                   className="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm rounded"
@@ -176,11 +176,11 @@ export default async function BlogPage({ params }: BlogPageProps) {
           )}
 
           {/* Cover Image */}
-          {blog.coverImage && (
+          {(blog as any).coverImage && (
             <div className="aspect-video relative rounded-lg overflow-hidden mb-8 bg-gray-100 dark:bg-gray-800">
               <Image
-                src={blog.coverImage}
-                alt={blog.title}
+                src={(blog as any).coverImage}
+                alt={(blog as any).title}
                 fill
                 className="object-contain"
               />
@@ -191,7 +191,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
         {/* Content */}
         <div 
           className="prose prose-lg dark:prose-invert max-w-none mb-12"
-          dangerouslySetInnerHTML={{ __html: blog.content }}
+          dangerouslySetInnerHTML={{ __html: (blog as any).content }}
         />
 
         {/* Share Section */}
@@ -201,8 +201,8 @@ export default async function BlogPage({ params }: BlogPageProps) {
               Share this post
             </h3>
             <ShareButton 
-              title={blog.title}
-              excerpt={blog.excerpt || ''}
+              title={(blog as any).title}
+              excerpt={(blog as any).excerpt || ''}
             />
           </div>
         </div>

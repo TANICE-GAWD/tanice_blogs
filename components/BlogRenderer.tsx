@@ -1,15 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { renderMediaPlaceholders } from '@/lib/mediaProcessor';
-
-interface MediaItem {
-  type: string;
-  url: string;
-  alt?: string;
-  caption?: string;
-  placeholder: string;
-}
+import { renderMediaPlaceholders, MediaItem } from '@/lib/mediaProcessor';
 
 interface BlogRendererProps {
   content: string;

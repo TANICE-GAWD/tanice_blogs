@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { categories, generateSlug } from '@/lib/utils';
-import { extractMediaFromContent, replaceMediaWithPlaceholders } from '@/lib/mediaProcessor';
 import toast from 'react-hot-toast';
 import TipTapEditor from './TipTapEditor';
 import ImageUpload from './ImageUpload';
@@ -21,7 +20,8 @@ interface BlogEditorProps {
     content: string;
     rawContent?: string;
     media?: Array<{
-      type: string;
+      id: string;
+      type: 'image' | 'video' | 'code' | 'embed';
       url: string;
       alt?: string;
       caption?: string;
@@ -63,10 +63,11 @@ export default function BlogEditor({ initialData, isEdit = false }: BlogEditorPr
   }, [title, isEdit]);
 
   const handleMediaInsert = async (type: string, url: string, alt?: string): Promise<string> => {
-    const mediaId = `${type}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const mediaId = `${type}_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
     const placeholder = `{{MEDIA:${type}_${mediaId}}}`;
     
     const newMediaItem = {
+      id: mediaId,
       type: type as 'image' | 'video' | 'code' | 'embed',
       url,
       alt,
@@ -88,17 +89,26 @@ export default function BlogEditor({ initialData, isEdit = false }: BlogEditorPr
 
     try {
       // Start with basic media processing - only handle uploaded images
-      let processedMedia = [];
+      let processedMedia: Array<{
+        id: string;
+        type: 'image' | 'video' | 'code' | 'embed';
+        url: string;
+        alt?: string;
+        caption?: string;
+        placeholder: string;
+        position: number;
+      }> = [];
       
       // Only process media if we have any
       if (mediaItems.length > 0) {
         processedMedia = mediaItems.map((item, index) => ({
-          type: item.type || 'image',
+          id: item.id || `media_${index}`,
+          type: (item.type || 'image') as 'image' | 'video' | 'code' | 'embed',
           url: item.url || '',
           alt: item.alt || '',
           caption: item.caption || '',
+          placeholder: item.placeholder || `{{MEDIA:${item.type}_${item.id}}}`,
           position: index,
-          metadata: {}
         }));
       }
       
@@ -134,7 +144,7 @@ export default function BlogEditor({ initialData, isEdit = false }: BlogEditorPr
         throw new Error(error.error || 'Failed to save blog');
       }
 
-      const result = await response.json();
+      await response.json();
       
       toast.success(
         publish 

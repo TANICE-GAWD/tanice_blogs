@@ -58,64 +58,72 @@ export default function TipTapEditor({ content, onChange, onMediaInsert }: TipTa
     if (!file || !editor) return;
 
     setIsUploading(true);
+    let base64: string = '';
+    
     try {
       // Create temporary base64 preview
       const reader = new FileReader();
       reader.onload = async (e) => {
-        const base64 = e.target?.result as string;
+        base64 = e.target?.result as string;
         
         // Insert temporary image
         const mediaId = `temp_${Date.now()}`;
         editor.chain().focus().setImage({ 
           src: base64, 
-          alt: file.name,
-          'data-media-id': mediaId 
+          alt: file.name
         }).run();
         
-        // Upload to server
-        const formData = new FormData();
-        formData.append('file', file);
-        
-        const response = await fetch('/api/media/upload', {
-          method: 'POST',
-          body: formData,
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-          // Replace base64 with actual URL
+        try {
+          // Upload to server
+          const formData = new FormData();
+          formData.append('file', file);
+          
+          const response = await fetch('/api/media/upload', {
+            method: 'POST',
+            body: formData,
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            // Replace base64 with actual URL by finding the most recently added image
+            const currentContent = editor.getHTML();
+            const updatedContent = currentContent.replace(
+              new RegExp(`<img[^>]*src="${base64.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[^>]*>`, 'g'),
+              `<img src="${data.url}" alt="${file.name}" class="rounded-lg mx-auto my-4 max-w-full h-auto" />`
+            );
+            
+            editor.commands.setContent(updatedContent);
+            
+            // Call media insert callback if provided
+            if (onMediaInsert) {
+              await onMediaInsert('image', data.url, file.name);
+            }
+            
+            toast.success('Image uploaded successfully!');
+          } else {
+            throw new Error(data.error || 'Upload failed');
+          }
+        } catch (uploadError) {
+          console.error('Upload failed:', uploadError);
+          toast.error(uploadError instanceof Error ? uploadError.message : 'Upload failed');
+          
+          // Remove the temporary image on error
           const currentContent = editor.getHTML();
           const updatedContent = currentContent.replace(
-            new RegExp(`<img[^>]*data-media-id="${mediaId}"[^>]*>`, 'g'),
-            `<img src="${data.url}" alt="${file.name}" data-media-id="${data.mediaId}" class="rounded-lg mx-auto my-4 max-w-full h-auto" />`
+            new RegExp(`<img[^>]*src="${base64.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[^>]*>`, 'g'),
+            ''
           );
-          
           editor.commands.setContent(updatedContent);
-          
-          // Call media insert callback if provided
-          if (onMediaInsert) {
-            await onMediaInsert('image', data.url, file.name);
-          }
-          
-          toast.success('Image uploaded successfully!');
-        } else {
-          throw new Error(data.error || 'Upload failed');
+        } finally {
+          setIsUploading(false);
+          event.target.value = ''; // Reset file input
         }
       };
       reader.readAsDataURL(file);
     } catch (error) {
-      console.error('Upload failed:', error);
-      toast.error(error instanceof Error ? error.message : 'Upload failed');
-      
-      // Remove the temporary image
-      const currentContent = editor.getHTML();
-      const updatedContent = currentContent.replace(
-        /<img[^>]*data-media-id="temp_[^"]*"[^>]*>/g,
-        ''
-      );
-      editor.commands.setContent(updatedContent);
-    } finally {
+      console.error('File reading failed:', error);
+      toast.error('Failed to read file');
       setIsUploading(false);
       event.target.value = ''; // Reset file input
     }
