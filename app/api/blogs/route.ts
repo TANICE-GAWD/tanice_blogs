@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import Blog from '@/models/Blog';
 import { generateSlug, calculateReadTime } from '@/lib/utils';
+import { extractMediaFromContent, replaceMediaWithPlaceholders } from '@/lib/mediaProcessor';
 
 // GET /api/blogs - Fetch blogs with filtering and pagination
 export async function GET(request: NextRequest) {
@@ -66,33 +67,13 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/blogs - Create new blog (Admin only)
+// POST /api/blogs - Create new blog
 export async function POST(request: NextRequest) {
   try {
-    // Check authentication
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Basic ')) {
-      return NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      );
-    }
-
-    const base64Credentials = authHeader.split(' ')[1];
-    const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
-    const [username, password] = credentials.split(':');
-
-    if (username !== process.env.ADMIN_USERNAME || password !== process.env.ADMIN_PASSWORD) {
-      return NextResponse.json(
-        { error: 'Invalid credentials' },
-        { status: 401 }
-      );
-    }
-
     await dbConnect();
 
     const body = await request.json();
-    const { title, content, category, tags, coverImage, published, excerpt, seoTitle, seoDescription } = body;
+    const { title, content, rawContent, media = [], category, tags, coverImage, published, excerpt, seoTitle, seoDescription } = body;
 
     // Validate required fields
     if (!title || !content || !category) {
@@ -119,13 +100,25 @@ export async function POST(request: NextRequest) {
     // Generate excerpt if not provided
     const finalExcerpt = excerpt || content.replace(/<[^>]*>/g, '').substring(0, 150) + '...';
 
+    // Ensure media array has proper structure
+    const processedMedia = Array.isArray(media) ? media.map((item, index) => ({
+      type: item.type || 'image',
+      url: item.url || '',
+      alt: item.alt || '',
+      caption: item.caption || '',
+      position: item.position || index,
+      metadata: item.metadata || {}
+    })) : [];
+
     const blog = new Blog({
       title,
       slug,
       content,
+      rawContent: rawContent || content,
+      media: processedMedia,
       excerpt: finalExcerpt,
       category,
-      tags: tags || [],
+      tags: Array.isArray(tags) ? tags : (tags ? tags.split(',').map((t: string) => t.trim()) : []),
       coverImage: coverImage || '',
       published: published || false,
       readTime,
@@ -145,8 +138,18 @@ export async function POST(request: NextRequest) {
     }, { status: 201 });
   } catch (error) {
     console.error('Error creating blog:', error);
+    
+    // More detailed error logging
+    if (error instanceof Error) {
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      });
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to create blog' },
+      { error: 'Failed to create blog', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

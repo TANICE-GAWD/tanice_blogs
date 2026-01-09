@@ -3,24 +3,14 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
 import { categories, generateSlug } from '@/lib/utils';
+import { extractMediaFromContent, replaceMediaWithPlaceholders } from '@/lib/mediaProcessor';
 import toast from 'react-hot-toast';
-import { getAuthCredentials } from '@/lib/auth';
+import TipTapEditor from './TipTapEditor';
 import { 
-  Bold, 
-  Italic, 
-  Code, 
-  List, 
-  ListOrdered, 
-  Quote, 
-  Undo, 
-  Redo,
   Eye,
   Save,
-  Send,
-  FileCode
+  Send
 } from 'lucide-react';
 
 interface BlogEditorProps {
@@ -28,6 +18,15 @@ interface BlogEditorProps {
     _id?: string;
     title: string;
     content: string;
+    rawContent?: string;
+    media?: Array<{
+      type: string;
+      url: string;
+      alt?: string;
+      caption?: string;
+      placeholder: string;
+      position: number;
+    }>;
     category: string;
     tags: string[];
     coverImage?: string;
@@ -43,6 +42,7 @@ export default function BlogEditor({ initialData, isEdit = false }: BlogEditorPr
   const router = useRouter();
   const [title, setTitle] = useState(initialData?.title || '');
   const [slug, setSlug] = useState('');
+  const [content, setContent] = useState(initialData?.rawContent || initialData?.content || '');
   const [category, setCategory] = useState(initialData?.category || 'system-design');
   const [tags, setTags] = useState(initialData?.tags?.join(', ') || '');
   const [coverImage, setCoverImage] = useState(initialData?.coverImage || '');
@@ -52,24 +52,7 @@ export default function BlogEditor({ initialData, isEdit = false }: BlogEditorPr
   const [isPreview, setIsPreview] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [showSeoFields, setShowSeoFields] = useState(false);
-
-  const editor = useEditor({
-    extensions: [
-      StarterKit.configure({
-        codeBlock: {
-          HTMLAttributes: {
-            class: 'bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto',
-          },
-        },
-      }),
-    ],
-    content: initialData?.content || '<p>Start writing your blog post...</p>',
-    editorProps: {
-      attributes: {
-        class: 'prose prose-lg dark:prose-invert max-w-none focus:outline-none min-h-[400px] p-4',
-      },
-    },
-  });
+  const [mediaItems, setMediaItems] = useState(initialData?.media || []);
 
   // Auto-generate slug from title
   useEffect(() => {
@@ -78,8 +61,24 @@ export default function BlogEditor({ initialData, isEdit = false }: BlogEditorPr
     }
   }, [title, isEdit]);
 
+  const handleMediaInsert = async (type: string, url: string, alt?: string): Promise<string> => {
+    const mediaId = `${type}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const placeholder = `{{MEDIA:${type}_${mediaId}}}`;
+    
+    const newMediaItem = {
+      type: type as 'image' | 'video' | 'code' | 'embed',
+      url,
+      alt,
+      placeholder,
+      position: mediaItems.length,
+    };
+    
+    setMediaItems(prev => [...prev, newMediaItem]);
+    return placeholder;
+  };
+
   const handleSave = async (publish: boolean = false) => {
-    if (!title.trim() || !editor?.getHTML()) {
+    if (!title.trim() || !content.trim()) {
       toast.error('Title and content are required');
       return;
     }
@@ -87,15 +86,12 @@ export default function BlogEditor({ initialData, isEdit = false }: BlogEditorPr
     setIsSaving(true);
 
     try {
-      const credentials = getAuthCredentials();
-      if (!credentials) {
-        toast.error('Authentication required');
-        return;
-      }
-      
+      // For now, let's simplify and not process media to isolate the issue
       const blogData = {
         title: title.trim(),
-        content: editor.getHTML(),
+        content: content,
+        rawContent: content,
+        media: [], // Start with empty media array
         category,
         tags: tags.split(',').map(tag => tag.trim()).filter(Boolean),
         coverImage: coverImage.trim(),
@@ -105,6 +101,8 @@ export default function BlogEditor({ initialData, isEdit = false }: BlogEditorPr
         published: publish,
       };
 
+      console.log('Sending simplified blog data:', JSON.stringify(blogData, null, 2));
+
       const url = isEdit ? `/api/blogs/${initialData?._id}` : '/api/blogs';
       const method = isEdit ? 'PUT' : 'POST';
 
@@ -112,7 +110,6 @@ export default function BlogEditor({ initialData, isEdit = false }: BlogEditorPr
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Basic ${credentials}`,
         },
         body: JSON.stringify(blogData),
       });
@@ -143,10 +140,6 @@ export default function BlogEditor({ initialData, isEdit = false }: BlogEditorPr
       setIsSaving(false);
     }
   };
-
-  if (!editor) {
-    return <div>Loading editor...</div>;
-  }
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -318,86 +311,11 @@ export default function BlogEditor({ initialData, isEdit = false }: BlogEditorPr
         {/* Editor */}
         <div className="p-6">
           {!isPreview && (
-            <>
-              {/* Toolbar */}
-              <div className="flex items-center gap-2 mb-4 p-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-slate-700">
-                <button
-                  onClick={() => editor.chain().focus().toggleBold().run()}
-                  className={`p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 ${
-                    editor.isActive('bold') ? 'bg-gray-200 dark:bg-gray-600' : ''
-                  }`}
-                >
-                  <Bold size={16} />
-                </button>
-                <button
-                  onClick={() => editor.chain().focus().toggleItalic().run()}
-                  className={`p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 ${
-                    editor.isActive('italic') ? 'bg-gray-200 dark:bg-gray-600' : ''
-                  }`}
-                >
-                  <Italic size={16} />
-                </button>
-                <button
-                  onClick={() => editor.chain().focus().toggleCode().run()}
-                  className={`p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 ${
-                    editor.isActive('code') ? 'bg-gray-200 dark:bg-gray-600' : ''
-                  }`}
-                >
-                  <Code size={16} />
-                </button>
-                <button
-                  onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-                  className={`p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 ${
-                    editor.isActive('codeBlock') ? 'bg-gray-200 dark:bg-gray-600' : ''
-                  }`}
-                >
-                  <FileCode size={16} />
-                </button>
-                <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
-                <button
-                  onClick={() => editor.chain().focus().toggleBulletList().run()}
-                  className={`p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 ${
-                    editor.isActive('bulletList') ? 'bg-gray-200 dark:bg-gray-600' : ''
-                  }`}
-                >
-                  <List size={16} />
-                </button>
-                <button
-                  onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                  className={`p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 ${
-                    editor.isActive('orderedList') ? 'bg-gray-200 dark:bg-gray-600' : ''
-                  }`}
-                >
-                  <ListOrdered size={16} />
-                </button>
-                <button
-                  onClick={() => editor.chain().focus().toggleBlockquote().run()}
-                  className={`p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 ${
-                    editor.isActive('blockquote') ? 'bg-gray-200 dark:bg-gray-600' : ''
-                  }`}
-                >
-                  <Quote size={16} />
-                </button>
-                <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
-                <button
-                  onClick={() => editor.chain().focus().undo().run()}
-                  className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
-                >
-                  <Undo size={16} />
-                </button>
-                <button
-                  onClick={() => editor.chain().focus().redo().run()}
-                  className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
-                >
-                  <Redo size={16} />
-                </button>
-              </div>
-
-              {/* Editor Content */}
-              <div className="border border-gray-200 dark:border-gray-600 rounded-lg min-h-[400px] bg-white dark:bg-slate-700">
-                <EditorContent editor={editor} />
-              </div>
-            </>
+            <TipTapEditor
+              content={content}
+              onChange={setContent}
+              onMediaInsert={handleMediaInsert}
+            />
           )}
 
           {/* Preview */}
@@ -408,7 +326,7 @@ export default function BlogEditor({ initialData, isEdit = false }: BlogEditorPr
               </h2>
               <div 
                 className="prose prose-lg dark:prose-invert max-w-none"
-                dangerouslySetInnerHTML={{ __html: editor.getHTML() }}
+                dangerouslySetInnerHTML={{ __html: content }}
               />
             </div>
           )}

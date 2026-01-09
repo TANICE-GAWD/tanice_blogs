@@ -8,6 +8,7 @@ import { formatDate, categories } from '@/lib/utils';
 import { Clock, ArrowLeft } from 'lucide-react';
 import ShareButton from '@/components/ShareButton';
 import ViewTracker from '@/components/ViewTracker';
+import BlogRenderer from '@/components/BlogRenderer';
 
 interface BlogPageProps {
   params: { slug: string };
@@ -188,9 +189,10 @@ export default async function BlogPage({ params }: BlogPageProps) {
         </header>
 
         {/* Content */}
-        <div 
-          className="prose prose-lg dark:prose-invert max-w-none mb-12"
-          dangerouslySetInnerHTML={{ __html: blog.content }}
+        <BlogRenderer 
+          content={blog.content}
+          media={blog.media || []}
+          className="mb-12"
         />
 
         {/* Share Section */}

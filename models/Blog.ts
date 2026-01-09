@@ -1,10 +1,43 @@
 import mongoose from 'mongoose';
 
+// Sub-schema for media items
+const MediaSchema = new mongoose.Schema({
+  type: {
+    type: String,
+    enum: ['image', 'video', 'code', 'gist', 'tweet', 'embed'],
+    required: true,
+  },
+  url: {
+    type: String,
+    required: true,
+  },
+  alt: String,
+  caption: String,
+  width: Number,
+  height: Number,
+  position: {
+    type: Number,
+    required: true,
+  },
+  metadata: mongoose.Schema.Types.Mixed,
+});
+
 export interface IBlog {
   _id: string;
   title: string;
   slug: string;
   content: string;
+  media: Array<{
+    type: 'image' | 'video' | 'code' | 'gist' | 'tweet' | 'embed';
+    url: string;
+    alt?: string;
+    caption?: string;
+    width?: number;
+    height?: number;
+    position: number;
+    metadata?: any;
+  }>;
+  rawContent?: string;
   excerpt?: string;
   category: 'system-design' | 'dsa' | 'linkedin' | 'interviews' | 'startup-hiring';
   tags: string[];
@@ -20,6 +53,7 @@ export interface IBlog {
   updatedAt: Date;
 }
 
+// Enhanced Blog Schema with Media Support
 const BlogSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -32,10 +66,17 @@ const BlogSchema = new mongoose.Schema({
     unique: true,
     lowercase: true,
   },
+  // Store content as HTML with media placeholders
   content: {
-    type: String,
-    required: [true, 'Content is required'],
+    type: String, // HTML content with {{MEDIA:id}} placeholders
+    required: true,
   },
+  // Store media separately with their positions
+  media: [MediaSchema],
+  
+  // Store raw content for editing
+  rawContent: String,
+  
   excerpt: {
     type: String,
     maxlength: 200,

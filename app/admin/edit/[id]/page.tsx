@@ -52,6 +52,8 @@ export default async function EditPostPage({ params }: EditPostPageProps) {
           _id: post._id,
           title: post.title,
           content: post.content,
+          rawContent: post.rawContent,
+          media: post.media,
           category: post.category,
           tags: post.tags,
           coverImage: post.coverImage,
