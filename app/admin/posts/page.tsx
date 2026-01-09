@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import dbConnect from '@/lib/db';
-import Blog from '@/models/Blog';
+import Blog, { IBlog } from '@/models/Blog';
 import AllPostsClient from './AllPostsClient';
 
 export const metadata: Metadata = {
@@ -14,7 +14,7 @@ async function getAllPosts() {
     await dbConnect();
     const posts = await Blog.find()
       .sort({ updatedAt: -1 })
-      .lean();
+      .lean() as IBlog[];
 
     return posts.map(post => ({
       ...post,

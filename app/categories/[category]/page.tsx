@@ -37,7 +37,7 @@ async function getCategoryBlogs(
         .sort({ publishedAt: -1 })
         .skip(skip)
         .limit(limit)
-        .lean(),
+        .lean() as IBlog[],
       Blog.countDocuments(query),
     ]);
 

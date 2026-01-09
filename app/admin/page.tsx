@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import dbConnect from '@/lib/db';
-import Blog from '@/models/Blog';
+import Blog, { IBlog } from '@/models/Blog';
 import { formatDate, categories } from '@/lib/utils';
 import { Plus, FileText, Eye, Edit, Trash2 } from 'lucide-react';
 
@@ -40,7 +40,7 @@ async function getRecentPosts() {
     const posts = await Blog.find()
       .sort({ updatedAt: -1 })
       .limit(5)
-      .lean();
+      .lean() as IBlog[];
 
     return posts.map(post => ({
       ...post,

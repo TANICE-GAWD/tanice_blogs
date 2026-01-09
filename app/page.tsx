@@ -3,7 +3,7 @@ import BlogCard from '@/components/BlogCard';
 import CategoryCard from '@/components/CategoryCard';
 import { categories } from '@/lib/utils';
 import dbConnect from '@/lib/db';
-import Blog from '@/models/Blog';
+import Blog, { IBlog } from '@/models/Blog';
 import { ArrowRight } from 'lucide-react';
 
 async function getRecentBlogs() {
@@ -12,7 +12,7 @@ async function getRecentBlogs() {
     const blogs = await Blog.find({ published: true })
       .sort({ publishedAt: -1 })
       .limit(6)
-      .lean();
+      .lean() as IBlog[];
     
     return blogs.map(blog => ({
       ...blog,
@@ -33,7 +33,7 @@ async function getFeaturedBlogs() {
     const blogs = await Blog.find({ published: true })
       .sort({ views: -1, publishedAt: -1 })
       .limit(5)
-      .lean();
+      .lean() as IBlog[];
     
     return blogs.map(blog => ({
       ...blog,
