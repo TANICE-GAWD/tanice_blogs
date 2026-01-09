@@ -37,12 +37,12 @@ async function getCategoryBlogs(
         .sort({ publishedAt: -1 })
         .skip(skip)
         .limit(limit)
-        .lean() as IBlog[],
+        .lean(),
       Blog.countDocuments(query),
     ]);
 
     return {
-      blogs: blogs.map(blog => ({
+      blogs: blogs.map((blog: any) => ({
         ...blog,
         _id: blog._id.toString(),
         publishedAt: new Date(blog.publishedAt),

@@ -14,14 +14,14 @@ export async function GET() {
     console.log(`Found ${count} blog posts in database`);
     
     // Try to fetch all blogs
-    const blogs = await Blog.find().lean() as IBlog[];
+    const blogs = await Blog.find().lean();
     console.log('Blogs found:', blogs);
     
     return NextResponse.json({
       success: true,
       message: 'Database connection successful',
       blogCount: count,
-      blogs: blogs.map(blog => ({
+      blogs: blogs.map((blog: any) => ({
         id: blog._id.toString(),
         title: blog.title,
         published: blog.published,

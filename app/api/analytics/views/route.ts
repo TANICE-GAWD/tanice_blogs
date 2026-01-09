@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
       .sort({ views: -1 })
       .limit(10)
       .select('title slug views category')
-      .lean() as IBlog[];
+      .lean();
 
     // Get views by category
     const viewsByCategory = await Blog.aggregate([
@@ -56,16 +56,16 @@ export async function GET(request: NextRequest) {
     .sort({ lastViewed: -1 })
     .limit(20)
     .select('title slug views lastViewed category')
-    .lean() as IBlog[];
+    .lean();
 
     return NextResponse.json({
       totalViews: totalViews[0]?.totalViews || 0,
-      mostViewed: mostViewed.map(post => ({
+      mostViewed: mostViewed.map((post: any) => ({
         ...post,
         _id: post._id.toString(),
       })),
       viewsByCategory,
-      recentActivity: recentActivity.map(post => ({
+      recentActivity: recentActivity.map((post: any) => ({
         ...post,
         _id: post._id.toString(),
       })),

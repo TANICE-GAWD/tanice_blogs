@@ -40,9 +40,9 @@ async function getRecentPosts() {
     const posts = await Blog.find()
       .sort({ updatedAt: -1 })
       .limit(5)
-      .lean() as IBlog[];
+      .lean();
 
-    return posts.map(post => ({
+    return posts.map((post: any) => ({
       ...post,
       _id: post._id.toString(),
       publishedAt: new Date(post.publishedAt),
@@ -195,7 +195,7 @@ export default async function AdminDashboard() {
           {recentPosts.length > 0 ? (
             <div className="space-y-3">
               {recentPosts.map((post) => {
-                const categoryInfo = categories[post.category];
+                const categoryInfo = categories[(post as any).category as keyof typeof categories];
                 return (
                   <div
                     key={post._id}

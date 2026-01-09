@@ -14,9 +14,9 @@ async function getAllPosts() {
     await dbConnect();
     const posts = await Blog.find()
       .sort({ updatedAt: -1 })
-      .lean() as IBlog[];
+      .lean();
 
-    return posts.map(post => ({
+    return posts.map((post: any) => ({
       ...post,
       _id: post._id.toString(),
       publishedAt: new Date(post.publishedAt),

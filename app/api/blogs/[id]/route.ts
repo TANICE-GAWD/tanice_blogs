@@ -14,9 +14,9 @@ export async function GET(
     const { id } = params;
     
     // Try to find by slug first, then by ID
-    let blog = await Blog.findOne({ slug: id }).lean() as IBlog | null;
+    let blog = await Blog.findOne({ slug: id }).lean();
     if (!blog) {
-      blog = await Blog.findById(id).lean() as IBlog | null;
+      blog = await Blog.findById(id).lean();
     }
 
     if (!blog) {
@@ -27,12 +27,12 @@ export async function GET(
     }
 
     // Increment view count
-    await Blog.findByIdAndUpdate(blog._id, { $inc: { views: 1 } });
+    await Blog.findByIdAndUpdate((blog as any)._id, { $inc: { views: 1 } });
 
     return NextResponse.json({
       ...blog,
-      _id: blog._id.toString(),
-      views: blog.views + 1, // Return updated view count
+      _id: (blog as any)._id.toString(),
+      views: (blog as any).views + 1, // Return updated view count
     });
   } catch (error) {
     console.error('Error fetching blog:', error);

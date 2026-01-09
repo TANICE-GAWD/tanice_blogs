@@ -12,9 +12,9 @@ async function getRecentBlogs() {
     const blogs = await Blog.find({ published: true })
       .sort({ publishedAt: -1 })
       .limit(6)
-      .lean() as IBlog[];
+      .lean();
     
-    return blogs.map(blog => ({
+    return blogs.map((blog: any) => ({
       ...blog,
       _id: blog._id.toString(),
       publishedAt: new Date(blog.publishedAt),
@@ -33,9 +33,9 @@ async function getFeaturedBlogs() {
     const blogs = await Blog.find({ published: true })
       .sort({ views: -1, publishedAt: -1 })
       .limit(5)
-      .lean() as IBlog[];
+      .lean();
     
-    return blogs.map(blog => ({
+    return blogs.map((blog: any) => ({
       ...blog,
       _id: blog._id.toString(),
       publishedAt: new Date(blog.publishedAt),

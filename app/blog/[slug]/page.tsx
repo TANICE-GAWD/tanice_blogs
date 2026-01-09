@@ -17,7 +17,7 @@ interface BlogPageProps {
 async function getBlog(slug: string): Promise<IBlog | null> {
   try {
     await dbConnect();
-    const blog = await Blog.findOne({ slug, published: true }).lean() as IBlog | null;
+    const blog = await Blog.findOne({ slug, published: true }).lean();
     
     if (!blog) return null;
 
@@ -45,9 +45,9 @@ async function getRelatedBlogs(category: string, currentSlug: string): Promise<I
     })
     .sort({ publishedAt: -1 })
     .limit(3)
-    .lean() as IBlog[];
+    .lean();
 
-    return blogs.map(blog => ({
+    return blogs.map((blog: any) => ({
       ...blog,
       _id: blog._id.toString(),
       publishedAt: new Date(blog.publishedAt),
