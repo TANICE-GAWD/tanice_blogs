@@ -1,209 +1,281 @@
 import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Github, Linkedin, Twitter, Mail } from 'lucide-react';
+import { 
+  Github, 
+  Linkedin, 
+  Twitter, 
+  Users, 
+  DollarSign, 
+  Zap, 
+  Code, 
+  Briefcase, 
+  Target,
+  TrendingUp,
+  Globe,
+  Rocket,
+  Award,
+  Building,
+  MapPin
+} from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'About - Tech Blog',
-  description: 'Learn more about me, my background in tech, and why I write about system design, DSA, and career growth.',
+  title: 'About | TANICE - Software Engineer & Technical Writer',
+  description: 'Learn about Prince Tanice, a Software Engineer experienced in scaling US startup products, AI IDE development, and go-to-market strategies.',
+  keywords: 'software engineer, startup scaling, AI IDE, DevSwarm, technical writing, go-to-market, SWE',
 };
 
 export default function AboutPage() {
+  const achievements = [
+    {
+      icon: Users,
+      value: '8,000+',
+      label: 'Users Scaled',
+      description: 'Successfully scaled startup products to serve thousands of active users'
+    },
+    {
+      icon: DollarSign,
+      value: '$14,000',
+      label: 'Revenue Processed',
+      description: 'Handled significant transaction volumes in production systems'
+    },
+    {
+      icon: Zap,
+      value: '2,000+',
+      label: 'Concurrent Users',
+      description: 'Built systems capable of handling high concurrent load'
+    }
+  ];
+
+  const experiences = [
+    {
+      icon: Code,
+      title: 'Distributed IDE Intern',
+      company: 'DevSwarm',
+      location: 'Oregon, USA',
+      period: 'Dec 2025 - Present',
+      description: 'Closed 12 integration partnerships, generating $47K ARR. Successful "Show HN" campaign that drove a 5X surge in organic sign-ups. Deployed integration guides, reducing support tickets by 35%.',
+      skills: ['Integration Partnerships', 'Developer Relations', 'Technical Documentation', 'Growth Marketing']
+    },
+    {
+      icon: Briefcase,
+      title: 'Freelancer',
+      company: 'Independent',
+      location: 'Remote',
+      period: 'Oct 2025 - Present',
+      description: 'Developed over 5 MVPs for early-stage startups (e.g., Adopter - US based startup). Launched a commercial real-estate portfolio site (realestatebyneha.com). Delivered custom apps for PhD Institutes (e.g., PGIMER Chandigarh) to streamline research data processing.',
+      skills: ['MVP Development', 'Real Estate Tech', 'Research Data Processing', 'Custom Applications']
+    },
+    {
+      icon: Rocket,
+      title: 'Intern @ MindSpace',
+      company: 'MindSpace',
+      location: 'Remote',
+      period: 'Sep 2025 - Nov 2025',
+      description: 'Integrated one game powered by AI recognition and another utilizing OpenCV for visual processing. Optimized KPIs for the main website which cut API request latency using Redis by 15% and improved page load speed by 10%.',
+      skills: ['AI Integration', 'Computer Vision', 'Performance Optimization', 'Redis Caching']
+    }
+  ];
+
+  const techStack = [
+    // Programming Languages
+    'React Native', 'Flutter', 'TypeScript', 'HTML5', 'CSS', 'JavaScript', 'SQL', 'Python',
+    // Frameworks
+    'Express.js', 'React.js', 'Next.js', 'Three.js', 'Tailwind CSS', 'Module CSS',
+    // Databases & Cloud
+    'MongoDB', 'Firebase', 'DigitalOcean', 'PhoneP+',
+    // Developer Tools
+    'Redis', 'Postman', 'Git', 'VS Code', 'Firebase', 'OAuth'
+  ];
+
+  const interests = [
+    { icon: Building, title: 'System Design', description: 'Architecting scalable distributed systems' },
+    { icon: Target, title: 'Startup Growth', description: 'Scaling products from 0 to thousands of users' },
+    { icon: Globe, title: 'Technical Writing', description: 'Sharing knowledge through detailed blog posts' },
+    { icon: Award, title: 'Mentoring', description: 'Helping developers grow their careers' }
+  ];
+
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-900">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {/* Header */}
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Hero Section */}
         <div className="text-center mb-16">
-          <div className="relative w-32 h-32 mx-auto mb-8">
-            <Image
-              src="/profile.jpg"
-              alt="Profile"
-              fill
-              className="rounded-full object-cover"
-              onError={(e) => {
-                // Fallback to a placeholder if image doesn't exist
-                e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiByeD0iNjQiIGZpbGw9IiNGM0Y0RjYiLz4KPHN2ZyB4PSIzMiIgeT0iMzIiIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM5Q0EzQUYiIHN0cm9rZS13aWR0aD0iMiI+CjxwYXRoIGQ9Im0yMCAyMS0yLTJtLTYtNmwtMi0yIi8+CjxjaXJjbGUgY3g9IjkiIGN5PSI5IiByPSI5Ii8+Cjwvc3ZnPgo8L3N2Zz4K';
-              }}
-            />
+          <div className="relative inline-block mb-8">
+            {/* Profile Picture Placeholder */}
+            <div className="w-32 h-32 mx-auto bg-blue-600 rounded-full flex items-center justify-center shadow-lg">
+              <div className="w-28 h-28 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
+                <span className="text-2xl font-bold text-gray-500 dark:text-gray-400">PT</span>
+              </div>
+            </div>
+            {/* Status Indicator */}
+            <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white dark:border-slate-900 flex items-center justify-center">
+              <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
+            </div>
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            About Me
+          
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            Prince Tanice
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Software engineer passionate about building scalable systems and helping others grow in their tech careers.
+          
+          <p className="text-xl text-gray-600 dark:text-gray-300 mb-6 max-w-3xl mx-auto">
+            Software Engineer experienced in scaling US startup products, AI IDE development, 
+            and bridging the gap between technical excellence and market success.
           </p>
-        </div>
-
-        {/* Main Content */}
-        <div className="prose prose-lg dark:prose-invert max-w-none">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            {/* Main Content */}
-            <div className="lg:col-span-2">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">My Journey</h2>
-              
-              <p className="text-gray-600 dark:text-gray-300 mb-6">
-                Hi! I'm a software engineer with over 5 years of experience building scalable web applications 
-                and distributed systems. I've worked at both startups and large tech companies, giving me a 
-                unique perspective on different engineering cultures and practices.
-              </p>
-
-              <p className="text-gray-600 dark:text-gray-300 mb-6">
-                My passion lies in system design, data structures & algorithms, and helping fellow developers 
-                navigate their careers. I believe in learning by doing and sharing knowledge with the community.
-              </p>
-
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">What I Write About</h3>
-              
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-start">
-                  <span className="text-blue-600 dark:text-blue-400 mr-2">🏗️</span>
-                  <div>
-                    <strong className="text-gray-900 dark:text-white">System Design:</strong>
-                    <span className="text-gray-600 dark:text-gray-300 ml-2">
-                      Scalable architecture patterns, distributed systems, and real-world design decisions
-                    </span>
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-green-600 dark:text-green-400 mr-2">🧮</span>
-                  <div>
-                    <strong className="text-gray-900 dark:text-white">DSA:</strong>
-                    <span className="text-gray-600 dark:text-gray-300 ml-2">
-                      Data structures and algorithms explained with practical examples and use cases
-                    </span>
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-purple-600 dark:text-purple-400 mr-2">💼</span>
-                  <div>
-                    <strong className="text-gray-900 dark:text-white">LinkedIn & Networking:</strong>
-                    <span className="text-gray-600 dark:text-gray-300 ml-2">
-                      Building your professional brand and growing your network in tech
-                    </span>
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-orange-600 dark:text-orange-400 mr-2">🎯</span>
-                  <div>
-                    <strong className="text-gray-900 dark:text-white">Interview Prep:</strong>
-                    <span className="text-gray-600 dark:text-gray-300 ml-2">
-                      Technical interview strategies, coding challenges, and behavioral questions
-                    </span>
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-red-600 dark:text-red-400 mr-2">🚀</span>
-                  <div>
-                    <strong className="text-gray-900 dark:text-white">Startup Hiring:</strong>
-                    <span className="text-gray-600 dark:text-gray-300 ml-2">
-                      Insights into startup culture, hiring processes, and building engineering teams
-                    </span>
-                  </div>
-                </li>
-              </ul>
-
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">My Background</h3>
-              
-              <p className="text-gray-600 dark:text-gray-300 mb-6">
-                I started my career as a frontend developer and gradually moved into full-stack development 
-                and system architecture. I've had the opportunity to work on everything from consumer-facing 
-                applications to backend infrastructure serving millions of users.
-              </p>
-
-              <p className="text-gray-600 dark:text-gray-300 mb-8">
-                When I'm not coding, you can find me mentoring junior developers, contributing to open source 
-                projects, or exploring new technologies. I believe in continuous learning and staying curious 
-                about emerging trends in tech.
-              </p>
-            </div>
-
-            {/* Sidebar */}
-            <div className="lg:col-span-1">
-              <div className="bg-gray-50 dark:bg-slate-800 rounded-lg p-6 mb-8">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Connect With Me</h3>
-                <div className="space-y-3">
-                  <a
-                    href="https://github.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
-                  >
-                    <Github size={20} className="mr-3" />
-                    GitHub
-                  </a>
-                  <a
-                    href="https://linkedin.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
-                  >
-                    <Linkedin size={20} className="mr-3" />
-                    LinkedIn
-                  </a>
-                  <a
-                    href="https://twitter.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
-                  >
-                    <Twitter size={20} className="mr-3" />
-                    Twitter
-                  </a>
-                  <a
-                    href="mailto:your.email@example.com"
-                    className="flex items-center text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
-                  >
-                    <Mail size={20} className="mr-3" />
-                    Email
-                  </a>
-                </div>
-              </div>
-
-              <div className="bg-gray-50 dark:bg-slate-800 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tech Stack</h3>
-                <div className="flex flex-wrap gap-2">
-                  {[
-                    'JavaScript', 'TypeScript', 'React', 'Node.js', 'Python', 
-                    'Go', 'PostgreSQL', 'MongoDB', 'Redis', 'AWS', 'Docker', 'Kubernetes'
-                  ].map((tech) => (
-                    <span
-                      key={tech}
-                      className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm rounded"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className="mt-16 text-center bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-700 rounded-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-            Let's Connect!
-          </h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
-            I'm always interested in connecting with fellow developers, discussing tech trends, 
-            or helping with career advice. Feel free to reach out!
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          
+          <div className="flex justify-center space-x-4 mb-8">
             <a
-              href="mailto:your.email@example.com"
-              className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              href="https://github.com/TANICE-GAWD"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-medium rounded-lg hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
             >
-              <Mail className="mr-2" size={20} />
-              Send me an email
+              <Github className="h-5 w-5 mr-2" />
+              GitHub
             </a>
-            <Link
-              href="/"
-              className="inline-flex items-center px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors font-medium"
+            <a
+              href="https://linkedin.com/in/prince-tanice"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
             >
-              Read my posts
-            </Link>
+              <Linkedin className="h-5 w-5 mr-2" />
+              LinkedIn
+            </a>
+            <a
+              href="https://x.com/TANICE_GAWD"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-6 py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-colors"
+            >
+              <Twitter className="h-5 w-5 mr-2" />
+              Twitter
+            </a>
           </div>
         </div>
+
+        {/* Key Achievements */}
+        <div className="mb-16">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">
+            Key Achievements
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {achievements.map((achievement, index) => (
+              <div key={index} className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-sm border border-gray-200 dark:border-gray-700 text-center hover:shadow-lg transition-shadow">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900/20 rounded-full mb-6">
+                  <achievement.icon className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                </div>
+                <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                  {achievement.value}
+                </h3>
+                <p className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-3">
+                  {achievement.label}
+                </p>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {achievement.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Professional Experience */}
+        <div className="mb-16">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">
+            Professional Experience
+          </h2>
+          <div className="space-y-8">
+            {experiences.map((exp, index) => (
+              <div key={index} className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-sm border border-gray-200 dark:border-gray-700">
+                <div className="flex items-start space-x-6">
+                  <div className="flex-shrink-0">
+                    <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+                      <exp.icon className="h-6 w-6 text-white" />
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                          {exp.title}
+                        </h3>
+                        <p className="text-blue-600 dark:text-blue-400 font-medium">
+                          {exp.company}
+                        </p>
+                      </div>
+                      <div className="text-right mt-2 sm:mt-0">
+                        <div className="flex items-center text-gray-500 dark:text-gray-400">
+                          <MapPin className="h-4 w-4 mr-1" />
+                          {exp.location}
+                        </div>
+                        <p className="text-gray-500 dark:text-gray-400 text-sm">
+                          {exp.period}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-gray-600 dark:text-gray-300 mb-4">
+                      {exp.description}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {exp.skills.map((skill, skillIndex) => (
+                        <span
+                          key={skillIndex}
+                          className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm rounded-full"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Technical Skills */}
+        <div className="mb-16">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">
+            Technical Stack
+          </h2>
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="flex flex-wrap gap-3 justify-center">
+              {techStack.map((tech, index) => (
+                <span
+                  key={index}
+                  className="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium rounded-lg border border-blue-200 dark:border-blue-800"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Interests & Focus Areas */}
+        <div className="mb-16">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">
+            Areas of Interest
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {interests.map((interest, index) => (
+              <div key={index} className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow">
+                <div className="flex items-center mb-4">
+                  <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center mr-4">
+                    <interest.icon className="h-5 w-5 text-white" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    {interest.title}
+                  </h3>
+                </div>
+                <p className="text-gray-600 dark:text-gray-300">
+                  {interest.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+
       </div>
     </div>
   );

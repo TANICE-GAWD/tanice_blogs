@@ -25,8 +25,8 @@ export default function PrivacyPage() {
             </h2>
             <p className="text-blue-800 dark:text-blue-200">
               <strong>Data Controller:</strong> TANICE Blog<br />
-              <strong>Contact Email:</strong> contact@taniceblog.com<br />
-              <strong>Website:</strong> https://taniceblog.com
+              <strong>Contact Email:</strong> tanice.dev@gmail.com<br />
+              <strong>Website:</strong> https://tanice.me
             </p>
           </div>
 
@@ -136,7 +136,7 @@ export default function PrivacyPage() {
 
           <h3>6.3 Exercising Your Rights</h3>
           <p>
-            To exercise any of these rights, please contact us at contact@taniceblog.com. We will respond to your request within 30 days.
+            To exercise any of these rights, please contact us at tanice.dev@gmail.com. We will respond to your request within 30 days.
           </p>
 
           <h2>7. Data Retention</h2>
