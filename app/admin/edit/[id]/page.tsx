@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import dbConnect from '@/lib/db';
-import Blog from '@/models/Blog';
+import Blog, { IBlog } from '@/models/Blog';
 import BlogEditor from '@/components/Admin/BlogEditor';
 
 interface EditPostPageProps {
@@ -11,16 +11,36 @@ interface EditPostPageProps {
 async function getPost(id: string) {
   try {
     await dbConnect();
-    const post = await Blog.findById(id).lean();
+    const post = await Blog.findById(id).lean() as IBlog | null;
     
     if (!post) return null;
 
     return {
-      ...post,
-      _id: post._id?.toString() || '',
+      _id: post._id.toString(),
+      title: post.title,
+      slug: post.slug,
+      content: post.content,
+      rawContent: post.rawContent || '',
+      media: (post.media || []).map((item, index) => ({
+        type: item.type,
+        url: item.url,
+        alt: item.alt,
+        caption: item.caption,
+        placeholder: `[media-${index}]`,
+        position: item.position,
+      })),
+      category: post.category,
+      tags: post.tags || [],
+      coverImage: post.coverImage || '',
+      published: post.published,
+      excerpt: post.excerpt || '',
+      seoTitle: post.seoTitle || '',
+      seoDescription: post.seoDescription || '',
       publishedAt: new Date(post.publishedAt),
       createdAt: new Date(post.createdAt),
       updatedAt: new Date(post.updatedAt),
+      readTime: post.readTime || 0,
+      views: post.views || 0,
     };
   } catch (error) {
     console.error('Error fetching post:', error);
