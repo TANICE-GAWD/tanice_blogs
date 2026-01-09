@@ -2,7 +2,6 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import BlogCard from '@/components/BlogCard';
-import CategoryTracker from '@/components/CategoryTracker';
 import dbConnect from '@/lib/db';
 import Blog, { IBlog } from '@/models/Blog';
 import { categories } from '@/lib/utils';
@@ -115,7 +114,6 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
-      <CategoryTracker category={category} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back Button */}
         <Link
