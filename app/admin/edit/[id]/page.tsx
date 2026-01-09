@@ -17,7 +17,7 @@ async function getPost(id: string) {
 
     return {
       ...post,
-      _id: post._id.toString(),
+      _id: post._id?.toString() || '',
       publishedAt: new Date(post.publishedAt),
       createdAt: new Date(post.createdAt),
       updatedAt: new Date(post.updatedAt),
