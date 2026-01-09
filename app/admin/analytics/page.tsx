@@ -41,7 +41,7 @@ export default async function AnalyticsPage() {
           Analytics
         </h1>
         <p className="text-gray-600 dark:text-gray-300">
-          Track your blog's performance and engagement
+          Track your blog&apos;s performance and engagement
         </p>
       </div>
 

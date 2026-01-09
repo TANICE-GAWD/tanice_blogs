@@ -29,7 +29,7 @@ export default function AnalyticsError({
           </h2>
           
           <p className="text-gray-600 dark:text-gray-300 mb-6">
-            We're having trouble loading the analytics data. This might be due to a temporary issue with the database connection.
+            We&apos;re having trouble loading the analytics data. This might be due to a temporary issue with the database connection.
           </p>
           
           <button
