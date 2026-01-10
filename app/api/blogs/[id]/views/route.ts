@@ -28,13 +28,13 @@ export async function GET(
       );
     }
 
-    console.log(`Views fetched for "${blog.title}": ${blog.views || 0}`);
+    console.log(`Views fetched for "${(blog as any).title}": ${(blog as any).views || 0}`);
 
     return NextResponse.json(
       {
-        views: blog.views || 0,
-        blogId: blog._id.toString(),
-        title: blog.title,
+        views: (blog as any).views || 0,
+        blogId: (blog as any)._id.toString(),
+        title: (blog as any).title,
       },
       {
         headers: {
