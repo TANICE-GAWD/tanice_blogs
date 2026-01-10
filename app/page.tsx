@@ -49,7 +49,7 @@ export default async function HomePage() {
           {/* Personal Introduction */}
           <div className="mb-6 md:mb-8">
             <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 md:mb-4">
-              Hi, I'm <span className="text-blue-600 dark:text-blue-400">TANICE</span>
+              Hi, I&apos;m <span className="text-blue-600 dark:text-blue-400">TANICE</span>
             </h1>
             <p className="font-serif text-lg sm:text-xl md:text-2xl text-gray-700 dark:text-gray-300 font-medium leading-relaxed">
               I yap about complex tech stuff but in my style.
