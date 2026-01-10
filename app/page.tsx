@@ -43,16 +43,50 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
-      {/* Hero Section - Responsive */}
-      <section className="py-12 md:py-16 lg:py-20 px-4 sm:px-6">
+      {/* Hero Section - Enhanced for User Retention */}
+      <section className="py-16 md:py-20 lg:py-24 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-4 md:mb-6 leading-tight">
-            Technical insights that matter
-          </h1>
-          <p className="font-serif text-lg sm:text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-6 md:mb-8 max-w-3xl mx-auto leading-relaxed px-4">
-            I write about system design, data structures, career growth, and startup hiring. 
-            Practical insights from my experience in tech.
-          </p>
+          {/* Personal Introduction */}
+          <div className="mb-6 md:mb-8">
+            <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 md:mb-4">
+              Hi, I'm <span className="text-blue-600 dark:text-blue-400">TANICE</span>
+            </h1>
+            <p className="font-serif text-lg sm:text-xl md:text-2xl text-gray-700 dark:text-gray-300 font-medium leading-relaxed">
+              I yap about complex tech stuff but in my style.
+            </p>
+          </div>
+
+          {/* Value Proposition */}
+          <div className="mb-8 md:mb-10">
+            <p className="font-serif text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-3xl mx-auto mb-6">
+              From system design patterns that scale to career moves that matter I share what I've learned 
+              building products and teams in the tech industry.
+            </p>
+            
+            {/* Key Topics - Visual Pills */}
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8">
+              {[
+                { label: 'System Design', color: 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' },
+                { label: 'Data Structures', color: 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300' },
+                { label: 'Networking', color: 'bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300' },
+                { label: 'Startup Hiring', color: 'bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300' }
+              ].map((topic) => (
+                <span
+                  key={topic.label}
+                  className={`inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium ${topic.color} border border-current border-opacity-20`}
+                >
+                  {topic.label}
+                </span>
+              ))}
+            </div>
+
+            {/* Scroll Indicator */}
+            <div className="pt-4">
+              <p className="font-sans text-sm text-gray-500 dark:text-gray-500 mb-2">
+                Latest insights below ↓
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
