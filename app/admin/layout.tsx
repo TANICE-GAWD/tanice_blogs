@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   robots: 'noindex, nofollow',
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default function AdminLayout({
   children,
 }: {

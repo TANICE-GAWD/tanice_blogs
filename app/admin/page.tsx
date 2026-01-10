@@ -3,19 +3,33 @@ import dbConnect from '@/lib/db';
 import Blog, { IBlog } from '@/models/Blog';
 import { formatDate, categories } from '@/lib/utils';
 import { Plus, FileText, Eye, Edit, Trash2 } from 'lucide-react';
+import { headers } from 'next/headers';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 async function getDashboardStats() {
   try {
     await dbConnect();
     
+    // Force fresh queries by adding a timestamp to bypass any MongoDB query caching
+    const timestamp = Date.now();
+    
     const [totalPosts, publishedPosts, draftPosts, totalViews] = await Promise.all([
-      Blog.countDocuments(),
-      Blog.countDocuments({ published: true }),
-      Blog.countDocuments({ published: false }),
+      Blog.countDocuments({}).exec(),
+      Blog.countDocuments({ published: true }).exec(),
+      Blog.countDocuments({ published: false }).exec(),
       Blog.aggregate([
         { $group: { _id: null, totalViews: { $sum: '$views' } } }
-      ]).then(result => result[0]?.totalViews || 0),
+      ]).exec().then(result => result[0]?.totalViews || 0),
     ]);
+
+    console.log(`Dashboard stats at ${new Date().toISOString()}:`, {
+      totalPosts,
+      publishedPosts,
+      draftPosts,
+      totalViews,
+    });
 
     return {
       totalPosts,
@@ -37,10 +51,13 @@ async function getDashboardStats() {
 async function getRecentPosts() {
   try {
     await dbConnect();
-    const posts = await Blog.find()
+    const posts = await Blog.find({})
       .sort({ updatedAt: -1 })
       .limit(5)
-      .lean();
+      .lean()
+      .exec();
+
+    console.log(`Recent posts count at ${new Date().toISOString()}:`, posts.length);
 
     return posts.map((post: any) => ({
       ...post,
@@ -56,6 +73,9 @@ async function getRecentPosts() {
 }
 
 export default async function AdminDashboard() {
+  // Force dynamic rendering by accessing headers
+  const headersList = headers();
+  
   const stats = await getDashboardStats();
   const recentPosts = await getRecentPosts();
 

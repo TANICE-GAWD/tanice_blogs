@@ -214,12 +214,6 @@ export default async function HomePage() {
               <p className="text-gray-600 dark:text-gray-300 mb-4">
                 No posts yet. Check back soon for new content!
               </p>
-              <Link
-                href="/admin"
-                className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
-              >
-                Admin Panel
-              </Link>
             </div>
           )}
         </div>
