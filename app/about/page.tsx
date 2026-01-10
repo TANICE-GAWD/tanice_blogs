@@ -105,7 +105,7 @@ export default function AboutPage() {
             <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto bg-blue-600 rounded-full flex items-center justify-center shadow-lg overflow-hidden">
               <Image
                 src="/LinkedIn_Pic.jpg"
-                alt="Prince Tanice"
+                alt="Prince Sharma (Tanice)"
                 width={128}
                 height={128}
                 className="w-full h-full object-cover rounded-full"
@@ -119,7 +119,7 @@ export default function AboutPage() {
           </div>
           
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4 px-4">
-            Prince Tanice
+            Prince Sharma (Tanice)
           </h1>
           
           <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 max-w-3xl mx-auto px-4 leading-relaxed">
