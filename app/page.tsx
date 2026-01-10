@@ -2,7 +2,7 @@ import Link from 'next/link';
 import BlogCard from '@/components/BlogCard';
 import { categories } from '@/lib/utils';
 import dbConnect from '@/lib/db';
-import Blog, { IBlog } from '@/models/Blog';
+import Blog from '@/models/Blog';
 import { ArrowRight, FileText, Building2, Calculator, Linkedin, Target, Rocket } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -59,7 +59,7 @@ export default async function HomePage() {
           {/* Value Proposition */}
           <div className="mb-8 md:mb-10">
             <p className="font-serif text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-3xl mx-auto mb-6">
-              From system design patterns that scale to career moves that matter I share what I've learned 
+              From system design patterns that scale to career moves that matter I share what I&apos;ve learned 
               building products and teams in the tech industry.
             </p>
             
