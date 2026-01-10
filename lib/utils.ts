@@ -30,27 +30,27 @@ export function formatDate(date: Date): string {
 export const categories = {
   'system-design': {
     name: 'System Design',
-    icon: '🏗️',
+    icon: 'Building2',
     color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
   },
   'dsa': {
     name: 'DSA',
-    icon: '🧮',
+    icon: 'Calculator',
     color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
   },
   'linkedin': {
     name: 'LinkedIn',
-    icon: '💼',
+    icon: 'Linkedin',
     color: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
   },
   'interviews': {
     name: 'Interviews',
-    icon: '🎯',
+    icon: 'Target',
     color: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
   },
   'startup-hiring': {
     name: 'Startup Hiring',
-    icon: '🚀',
+    icon: 'Rocket',
     color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
   },
 } as const;

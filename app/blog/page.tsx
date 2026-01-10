@@ -3,7 +3,7 @@ import Link from 'next/link';
 import BlogCard from '@/components/BlogCard';
 import dbConnect from '@/lib/db';
 import Blog, { IBlog } from '@/models/Blog';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, FileText } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -23,7 +23,8 @@ async function getAllBlogs() {
     await dbConnect();
     const blogs = await Blog.find({ published: true })
       .sort({ publishedAt: -1 })
-      .lean();
+      .lean()
+      .exec();
     
     return blogs.map((blog: any) => ({
       ...blog,
@@ -43,37 +44,37 @@ export default async function AllBlogsPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Back Button */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        {/* Back Button - Responsive */}
         <Link
           href="/"
-          className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 mb-8"
+          className="inline-flex items-center font-sans text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-8 sm:mb-12 transition-colors"
         >
-          <ArrowLeft size={16} className="mr-1" />
+          <ArrowLeft size={16} className="mr-2" />
           Back to Home
         </Link>
 
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+        {/* Header - Responsive */}
+        <div className="mb-12 sm:mb-16">
+          <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">
             All Posts
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <p className="font-serif text-lg sm:text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
             Browse all my articles on system design, data structures, career growth, and startup hiring.
           </p>
-          <div className="text-gray-500 dark:text-gray-400 mt-4">
+          <div className="font-sans text-sm text-gray-500 dark:text-gray-500 mt-4 sm:mt-6">
             {blogs.length} {blogs.length === 1 ? 'post' : 'posts'} published
           </div>
         </div>
 
-        {/* Blog Grid */}
+        {/* Blog Stream - Responsive */}
         {blogs.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="divide-y divide-gray-100 dark:divide-gray-800">
             {blogs.map((blog) => (
               <BlogCard
                 key={blog._id}
                 title={blog.title}
-                excerpt={blog.excerpt || blog.content.substring(0, 150) + '...'}
+                excerpt={blog.excerpt || blog.content.substring(0, 200) + '...'}
                 category={blog.category}
                 publishedAt={blog.publishedAt}
                 readTime={blog.readTime}
@@ -84,20 +85,25 @@ export default async function AllBlogsPage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4">📝</div>
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-              No posts yet
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-6">
-              Check back soon for new content!
-            </p>
-            <Link
-              href="/"
-              className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
-            >
-              Back to Home
-            </Link>
+          <div className="text-center py-16 sm:py-24">
+            <div className="max-w-md mx-auto px-4">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-6 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                <FileText className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400 dark:text-gray-500" />
+              </div>
+              <h2 className="font-serif text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                No posts yet
+              </h2>
+              <p className="font-serif text-base sm:text-lg text-gray-600 dark:text-gray-400 mb-6 sm:mb-8 leading-relaxed">
+                Check back soon for new content about system design, DSA, and career insights.
+              </p>
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 font-sans text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors border border-gray-300 dark:border-gray-600 rounded-full hover:border-gray-400 dark:hover:border-gray-500"
+              >
+                <ArrowLeft size={16} />
+                Back to Home
+              </Link>
+            </div>
           </div>
         )}
       </div>

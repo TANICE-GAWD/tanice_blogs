@@ -4,8 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 import { formatDate, categories } from '@/lib/utils';
-import { Clock, ImageIcon } from 'lucide-react';
-import ViewTracker from './ViewTracker';
+import { Clock, Eye, Building2, Calculator, Linkedin, Target, Rocket } from 'lucide-react';
 
 interface BlogCardProps {
   title: string;
@@ -17,6 +16,14 @@ interface BlogCardProps {
   coverImage?: string;
   views: number;
 }
+
+const iconMap = {
+  Building2,
+  Calculator,
+  Linkedin,
+  Target,
+  Rocket,
+};
 
 export default function BlogCard({
   title,
@@ -30,76 +37,61 @@ export default function BlogCard({
 }: BlogCardProps) {
   const categoryInfo = categories[category];
   const [imageError, setImageError] = useState(false);
-  const [imageLoading, setImageLoading] = useState(true);
+  const IconComponent = iconMap[categoryInfo.icon as keyof typeof iconMap];
 
   return (
     <Link href={`/blog/${slug}`} className="block">
-      <article className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 cursor-pointer">
-        {coverImage && !imageError && (
-          <div className="aspect-video relative bg-gray-100 dark:bg-gray-800">
-            {imageLoading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-800">
-                <div className="animate-pulse flex items-center justify-center">
-                  <ImageIcon className="w-8 h-8 text-gray-400" />
-                </div>
-              </div>
-            )}
-            <Image
-              src={coverImage}
-              alt={title}
-              fill
-              className="object-contain"
-              unoptimized
-              onLoad={() => setImageLoading(false)}
-              onError={() => {
-                setImageError(true);
-                setImageLoading(false);
-              }}
-            />
-          </div>
-        )}
-        
-        {coverImage && imageError && (
-          <div className="aspect-video relative bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-            <div className="text-center text-gray-400">
-              <ImageIcon className="w-12 h-12 mx-auto mb-2" />
-              <p className="text-sm">Image not available</p>
+      <article className="post-card py-8 sm:py-10 md:py-12 border-b border-gray-100 dark:border-gray-800 last:border-b-0 cursor-pointer">
+        <div className="flex flex-col lg:flex-row lg:items-start gap-4 sm:gap-6 lg:gap-8">
+          {/* Content */}
+          <div className="flex-1 min-w-0">
+            {/* Category */}
+            <div className="mb-2 sm:mb-3">
+              <span className="inline-flex items-center px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-sans font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
+                {IconComponent && <IconComponent size={12} className="mr-1 sm:mr-1.5 sm:w-3.5 sm:h-3.5" />}
+                <span className="hidden xs:inline">{categoryInfo.name}</span>
+              </span>
             </div>
-          </div>
-        )}
-        
-        <div className="p-6">
-          {/* Category Badge */}
-          <div className="flex items-center gap-2 mb-3">
-            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${categoryInfo.color}`}>
-              <span className="mr-1">{categoryInfo.icon}</span>
-              {categoryInfo.name}
-            </span>
-          </div>
 
-          {/* Title */}
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-            {title}
-          </h3>
+            {/* Title */}
+            <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4 leading-tight hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
+              {title}
+            </h2>
 
-          {/* Excerpt */}
-          <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
-            {excerpt}
-          </p>
+            {/* Excerpt */}
+            <p className="font-serif text-base sm:text-lg text-gray-600 dark:text-gray-400 mb-4 sm:mb-6 leading-relaxed line-clamp-2 sm:line-clamp-3">
+              {excerpt}
+            </p>
 
-          {/* Metadata */}
-          <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-            <div className="flex items-center gap-4">
-              <time dateTime={publishedAt.toISOString()}>
+            {/* Metadata */}
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 md:gap-6 text-xs sm:text-sm font-sans text-gray-500 dark:text-gray-500">
+              <time dateTime={publishedAt.toISOString()} className="flex-shrink-0">
                 {formatDate(publishedAt)}
               </time>
               <div className="flex items-center gap-1">
-                <Clock size={14} />
+                <Clock size={12} className="sm:w-3.5 sm:h-3.5" />
                 <span>{readTime} min read</span>
               </div>
+              <div className="flex items-center gap-1">
+                <Eye size={12} className="sm:w-3.5 sm:h-3.5" />
+                <span>{views.toLocaleString()} {views === 1 ? 'view' : 'views'}</span>
+              </div>
             </div>
-            <ViewTracker blogId={slug} initialViews={views} />
           </div>
+
+          {/* Cover Image - Responsive */}
+          {coverImage && !imageError && (
+            <div className="w-full h-40 sm:h-48 lg:w-40 lg:h-28 xl:w-48 xl:h-32 relative bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 order-first lg:order-last">
+              <Image
+                src={coverImage}
+                alt={title}
+                fill
+                className="object-contain"
+                unoptimized
+                onError={() => setImageError(true)}
+              />
+            </div>
+          )}
         </div>
       </article>
     </Link>
