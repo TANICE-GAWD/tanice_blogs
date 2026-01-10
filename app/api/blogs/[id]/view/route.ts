@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import Blog from '@/models/Blog';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // POST /api/blogs/[id]/view - Track a view
 export async function POST(
   request: NextRequest,
@@ -40,14 +43,23 @@ export async function POST(
       { new: true }
     );
 
-    // Log view for analytics (optional)
-    console.log(`View tracked for blog "${blog.title}" from IP: ${ip}`);
+    // Log view for analytics
+    console.log(`View tracked for blog "${blog.title}" from IP: ${ip}. New count: ${updatedBlog.views}`);
 
-    return NextResponse.json({
-      success: true,
-      views: updatedBlog.views,
-      blogId: updatedBlog._id.toString(),
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        views: updatedBlog.views,
+        blogId: updatedBlog._id.toString(),
+      },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        },
+      }
+    );
   } catch (error) {
     console.error('Error tracking view:', error);
     return NextResponse.json(

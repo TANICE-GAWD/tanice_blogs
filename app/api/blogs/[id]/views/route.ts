@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import Blog from '@/models/Blog';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // GET /api/blogs/[id]/views - Get current view count
 export async function GET(
   request: NextRequest,
@@ -12,10 +15,10 @@ export async function GET(
 
     const { id } = params;
     
-    // Find blog by ID or slug
-    let blog = await Blog.findOne({ slug: id }).select('views title');
+    // Find blog by ID or slug with fresh data
+    let blog = await Blog.findOne({ slug: id }).select('views title').lean().exec();
     if (!blog) {
-      blog = await Blog.findById(id).select('views title');
+      blog = await Blog.findById(id).select('views title').lean().exec();
     }
 
     if (!blog) {
@@ -25,11 +28,22 @@ export async function GET(
       );
     }
 
-    return NextResponse.json({
-      views: blog.views,
-      blogId: blog._id.toString(),
-      title: blog.title,
-    });
+    console.log(`Views fetched for "${blog.title}": ${blog.views || 0}`);
+
+    return NextResponse.json(
+      {
+        views: blog.views || 0,
+        blogId: blog._id.toString(),
+        title: blog.title,
+      },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        },
+      }
+    );
   } catch (error) {
     console.error('Error fetching views:', error);
     return NextResponse.json(

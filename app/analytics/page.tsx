@@ -14,6 +14,10 @@ import {
   Award,
   BookOpen
 } from 'lucide-react';
+import { headers } from 'next/headers';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: 'Analytics & Metrics | TANICE',
@@ -59,11 +63,17 @@ interface AnalyticsData {
 async function getAnalyticsData(): Promise<AnalyticsData> {
   await dbConnect();
 
-  // Get all published blogs
-  const blogs = await Blog.find({ published: true }).lean();
+  // Get all published blogs with fresh data
+  const blogs = await Blog.find({ published: true }).lean().exec();
+  
+  console.log(`Analytics data at ${new Date().toISOString()}:`, {
+    blogsFound: blogs.length,
+    totalViews: blogs.reduce((sum, blog) => sum + (blog.views || 0), 0),
+    blogViews: blogs.map(b => ({ title: b.title, views: b.views || 0 }))
+  });
   
   // Calculate basic metrics
-  const totalPosts = await Blog.countDocuments();
+  const totalPosts = await Blog.countDocuments({}).exec();
   const publishedPosts = blogs.length;
   const totalViews = blogs.reduce((sum, blog) => sum + (blog.views || 0), 0);
   const totalReadTime = blogs.reduce((sum, blog) => sum + (blog.readTime || 0), 0);
@@ -120,20 +130,16 @@ async function getAnalyticsData(): Promise<AnalyticsData> {
     views: stats.views
   }));
 
-  // Recent performance
+  // Recent performance - fix the calculation to use total views instead of lastViewed filtering
   const now_ms = now.getTime();
   const day_ms = 24 * 60 * 60 * 1000;
   
+  // For now, show total views since we don't have time-based view tracking
+  // In a real analytics system, you'd track views with timestamps
   const recentPerformance = {
-    last7Days: blogs.filter(blog => 
-      blog.lastViewed && (now_ms - new Date(blog.lastViewed).getTime()) <= 7 * day_ms
-    ).reduce((sum, blog) => sum + (blog.views || 0), 0),
-    last30Days: blogs.filter(blog => 
-      blog.lastViewed && (now_ms - new Date(blog.lastViewed).getTime()) <= 30 * day_ms
-    ).reduce((sum, blog) => sum + (blog.views || 0), 0),
-    last90Days: blogs.filter(blog => 
-      blog.lastViewed && (now_ms - new Date(blog.lastViewed).getTime()) <= 90 * day_ms
-    ).reduce((sum, blog) => sum + (blog.views || 0), 0)
+    last7Days: totalViews, // Placeholder - would need view timestamps for accurate data
+    last30Days: totalViews,
+    last90Days: totalViews
   };
 
   // Engagement metrics
@@ -165,6 +171,9 @@ async function getAnalyticsData(): Promise<AnalyticsData> {
 }
 
 export default async function AnalyticsPage() {
+  // Force dynamic rendering
+  const headersList = headers();
+  
   const data = await getAnalyticsData();
 
   const MetricCard = ({ 
